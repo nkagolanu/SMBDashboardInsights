@@ -13,7 +13,7 @@ def render_risk_analysis(df, risk_summary):
         risk_table,
         column_config={
             "Risk Category": st.column_config.Column(width="medium"),
-            "Definition": st.column_config.Column(width="large"),
+            "Definition": st.column_config.Column(width="large", max_chars=50),
             "Severity": st.column_config.Column(width="small")
         },
         hide_index=True

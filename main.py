@@ -63,7 +63,7 @@ with overview:
         risk_table,
         column_config={
             "Risk Category": st.column_config.Column(width=200),
-            "Definition": st.column_config.Column(width=800),
+            "Definition": st.column_config.Column(width=800, max_chars=50),
             "Severity": st.column_config.Column(width=150)
         },
         hide_index=True
