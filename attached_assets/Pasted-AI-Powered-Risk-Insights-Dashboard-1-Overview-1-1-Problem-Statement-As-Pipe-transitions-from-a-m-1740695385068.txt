@@ -1,0 +1,166 @@
+AI-Powered Risk Insights Dashboard
+
+1. Overview
+
+1.1 Problem Statement
+
+As Pipe transitions from a marketplace model to direct underwriting in embedded finance, managing risk exposure across platforms (Priority, Boulevard, Housecall Pro, etc.) has become increasingly complex. Unlike traditional lending, Pipe's revenue-based financing model lacks fixed repayment schedules, making it difficult to assess default risk using conventional metrics.
+
+The Risk Team needs an AI-driven dashboard that provides:
+
+Portfolio Overview – A high-level snapshot of active advances, repayment performance, and risk exposure across all embedded finance partners.
+
+Vintage & Cohort Analysis – The ability to drill down into platform-specific loan performance over time, identifying trends and optimizing underwriting strategies.
+
+Default & Risk Analysis – AI-powered tracking of non-traditional default risk metrics, ensuring early detection of at-risk SMBs and proactive funding strategy adjustments.
+
+2. Goals & Success Metrics
+
+2.1 Goals
+
+✅ Provide real-time visibility into Pipe’s total loan portfolio across embedded finance platforms.
+✅ Enable deep analysis of loan vintages to identify repayment trends & cohort performance.
+✅ Improve default risk prediction using Pipe’s unique repayment structure.
+✅ Allow faster risk decision-making with AI-driven insights & proactive alerts.
+
+2.2 Success Metrics
+
+📊 Portfolio Snapshot Load Time: Under 2 seconds.
+📉 Reduction in Default Rate: 10-15% improvement through early risk detection.
+🔍 Loan Performance Insights: Ability to track & analyze vintages across all platforms.
+🚀 User Engagement: At least 80% of risk analysts actively using the tool weekly.
+
+3. Features & Functionality
+
+3.1 Portfolio Overview (High-Level Summary Across Platforms)
+
+📊 Dashboard Snapshot
+
+✅ Total Capital Deployed: $X million across all platforms.
+✅ Active Advances by Platform: Breakdown of funding across Priority, Boulevard, etc.
+✅ Overall Portfolio Health:
+
+% of loans in healthy repayment
+
+% of loans at risk
+
+% of loans in potential default
+✅ Repayment Performance Trends: Rolling 3-month repayment velocity across all SMBs.
+✅ Risk Exposure Distribution: Categorized by industry, revenue cohort, and region.
+
+User Actions:
+
+🔍 Drill down into a specific platform for further analysis.
+🔔 Set alerts for significant portfolio shifts (e.g., increasing default risk in a platform).
+
+3.2 Vintage & Cohort Analysis (Analyze Loan Performance Over Time)
+
+📈 Select a Platform for Detailed View
+
+✅ Filter loans by vintage (e.g., Q1 2024, Q2 2024, etc.).
+✅ Compare repayment performance of different funding cohorts.
+✅ Graphical visualization of repayment velocity over time.
+✅ Loan success vs. default trends by vintage.
+
+📊 Data Insights in Tables & Graphs
+
+Vintage
+
+Total Funded
+
+% Paid Back (Month 3)
+
+% Paid Back (Month 6)
+
+Default Rate
+
+Q1 2024
+
+$XXM
+
+30%
+
+65%
+
+5%
+
+Q2 2024
+
+$XXM
+
+25%
+
+60%
+
+7%
+
+✅ Bottom Summary Section:
+
+AI detects underperforming cohorts (e.g., “Q2 2024 has a 20% slower repayment rate than expected”).
+
+AI suggests underwriting tweaks (e.g., “Consider adjusting revenue share % for SMBs with declining sales”).
+
+User Actions:
+
+🔍 Filter by industry, business type, revenue band, and risk category.
+📩 Download vintage performance reports for deeper manual analysis.
+
+3.3 Default & Risk Analysis (AI-Powered Risk Definitions)
+
+📉 Risk Categorization at Platform Level
+
+✅ Total at-risk loans (% of portfolio affected).
+✅ Breakdown by risk factor:
+
+Slow repayment velocity: Loan is repaying 70% slower than AI-predicted rate.
+
+Revenue drop risk: SMB revenue fell by 50%+ for 3 consecutive months.
+
+Non-payment risk: No payments detected in 60+ days (possible business closure).
+✅ Historical default trends by platform & industry.
+
+📊 Risk Summary Table
+
+Platform
+
+% of Loans At Risk
+
+Key Risk Factor
+
+AI Suggested Action
+
+Priority
+
+7%
+
+Slow Repayment
+
+Lower funding limit
+
+Boulevard
+
+10%
+
+Revenue Decline
+
+Increase % of revenue share
+
+Housecall Pro
+
+5%
+
+Zero Repayment
+
+Pause future advances
+
+📈 Deep Dive into At-Risk SMBs
+
+AI ranks top 10 riskiest SMBs, highlighting:
+✅ Risk Type (Slow Pay, Revenue Decline, No Payment).
+✅ Projected Repayment Period vs. Expected.
+✅ Suggested Intervention (Funding Adjustment, Review, Pause).
+
+User Actions:
+
+🔍 Filter & export at-risk loan data by risk factor.
+📩 Trigger AI-driven risk alerts to underwriting & finance teams.
