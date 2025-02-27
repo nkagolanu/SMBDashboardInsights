@@ -1,6 +1,6 @@
 import streamlit as st
 from utils.data_generator import load_loan_data, get_vintage_data
-from utils.risk_analyzer import get_risk_summary, calculate_risk_metrics
+from utils.risk_analyzer import get_risk_summary, calculate_risk_metrics, get_risk_category_table
 from components.portfolio_overview import render_portfolio_overview
 from components.vintage_analysis import render_vintage_analysis
 from components.risk_analysis import render_risk_analysis
@@ -31,11 +31,9 @@ if 'selected_platform' not in st.session_state:
     st.session_state.selected_platform = 'Priority'  # Set default platform
 
 # Create tabs
-overview, portfolio, vintage, risk = st.tabs([
+overview, portfolio = st.tabs([
     "Overview",
-    "Portfolio Overview",
-    "Vintage Analysis",
-    "Risk Analysis"
+    "Portfolio Analysis"
 ])
 
 with overview:
@@ -56,9 +54,24 @@ with overview:
     ⚠️ **Risk Analysis**
     - AI-driven risk categorization
     - Early detection of repayment issues and revenue decline
-
-    Use the platform selector below to focus on specific lending partners.
     """)
+
+    # Risk Category Explanation
+    st.subheader("Risk Categories Explained")
+    risk_table = get_risk_category_table()
+    st.dataframe(
+        risk_table,
+        column_config={
+            "Risk Category": st.column_config.Column(width=200),
+            "Definition": st.column_config.Column(width=800),
+            "Severity": st.column_config.Column(width=150)
+        },
+        hide_index=True
+    )
+
+    st.markdown("---")
+    st.subheader("Platform Selection")
+    st.markdown("Use the selector below to focus on specific lending partners.")
 
     # Platform selection
     platforms = sorted(df['platform'].unique().tolist())
@@ -83,14 +96,21 @@ filtered_df = df
 if st.session_state.selected_platform != 'All':
     filtered_df = df[df['platform'] == st.session_state.selected_platform]
 
-# Render other tabs with filtered data
+# Render portfolio analysis with all components
 with portfolio:
+    st.header("Portfolio Analysis")
+
+    # Portfolio Overview Section
     render_portfolio_overview(filtered_df)
 
-with vintage:
+    st.markdown("---")
+
+    # Vintage Analysis Section
     render_vintage_analysis(filtered_df, get_vintage_data(filtered_df))
 
-with risk:
+    st.markdown("---")
+
+    # Risk Analysis Section
     render_risk_analysis(filtered_df, get_risk_summary(filtered_df))
 
 # Add download functionality
