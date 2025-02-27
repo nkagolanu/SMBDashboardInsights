@@ -63,10 +63,11 @@ with overview:
                        "Risk Category":
                        st.column_config.Column(width=250),
                        "Definition":
-                       st.column_config.Column(
+                       st.column_config.TextColumn(
                            width=700,
                            help="Detailed explanation of the risk.",
-                           required=True),
+                           required=True,
+                           max_chars=300),
                        "Severity":
                        st.column_config.Column(width=150,
                                                help="Risk severity",
