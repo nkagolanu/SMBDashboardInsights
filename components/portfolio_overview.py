@@ -23,15 +23,7 @@ def render_portfolio_overview(df):
         at_risk = len(df[df['Risk Flags'].notna() & (df['Risk Flags'] != 'None')])
         st.metric("Loans at Risk", f"{at_risk:,}")
 
-    # Platform breakdown
-    st.subheader("Advances by Platform")
-    platform_fig = px.pie(
-        df,
-        values='amount',
-        names='platform',
-        title='Capital Deployment by Platform'
-    )
-    st.plotly_chart(platform_fig, use_container_width=True)
+    # No platform breakdown needed when viewing a single platform
 
     # Repayment trends
     st.subheader("Repayment Performance")
