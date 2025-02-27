@@ -9,6 +9,14 @@ st.set_page_config(page_title="AI-Powered Risk Insights Dashboard",
                    page_icon="📊",
                    layout="wide")
 
+# Configure to hide the sidebar nav
+st.markdown("""
+<style>
+[data-testid="stSidebar"] {
+    display: none;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # Load real data
 @st.cache_data
@@ -18,7 +26,6 @@ def load_data():
     risk_summary = get_risk_summary(df)
     risk_metrics = calculate_risk_metrics(df)
     return df, vintage_data, risk_summary, risk_metrics
-
 
 # Load data
 df, vintage_data, risk_summary, risk_metrics = load_data()
@@ -31,7 +38,10 @@ if 'selected_platform' not in st.session_state:
     st.session_state.selected_platform = 'Priority'  # Set default platform
 
 # Create tabs
-overview, portfolio = st.tabs(["Overview", "Portfolio Analysis"])
+overview, portfolio = st.tabs([
+    "Overview",
+    "Portfolio Analysis"
+])
 
 with overview:
     st.header("Dashboard Overview")
@@ -54,32 +64,21 @@ with overview:
     """)
 
     # Risk Category Explanation
-    risk_table = get_risk_category_table()
-
     st.subheader("Risk Categories Explained")
-
-    st.data_editor(risk_table,
-                   column_config={
-                       "Risk Category":
-                       st.column_config.Column(width=250),
-                       "Definition":
-                       st.column_config.TextColumn(
-                           width=700,
-                           help="Detailed explanation of the risk.",
-                           required=True,
-                           max_chars=300),
-                       "Severity":
-                       st.column_config.Column(width=150,
-                                               help="Risk severity",
-                                               disabled=True)
-                   },
-                   hide_index=True,
-                   use_container_width=True)
+    risk_table = get_risk_category_table()
+    st.dataframe(
+        risk_table,
+        column_config={
+            "Risk Category": st.column_config.Column(width=200),
+            "Definition": st.column_config.Column(width=800),
+            "Severity": st.column_config.Column(width=150)
+        },
+        hide_index=True
+    )
 
     st.markdown("---")
     st.subheader("Platform Selection")
-    st.markdown(
-        "Use the selector below to focus on specific lending partners.")
+    st.markdown("Use the selector below to focus on specific lending partners.")
 
     # Platform selection
     platforms = sorted(df['platform'].unique().tolist())
@@ -93,14 +92,27 @@ with overview:
     # Find the index of Priority
     default_index = platform_options.index('Priority')
 
-    st.session_state.selected_platform = st.selectbox("Select Platform",
-                                                      options=platform_options,
-                                                      index=default_index)
+    st.session_state.selected_platform = st.selectbox(
+        "Select Platform",
+        options=platform_options,
+        index=default_index
+    )
 
 # Filter data based on selected platform
 filtered_df = df
 if st.session_state.selected_platform != 'All':
     filtered_df = df[df['platform'] == st.session_state.selected_platform]
+
+# Add export button in the main interface
+col1, col2 = st.columns([6, 1])
+with col2:
+    csv = filtered_df.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="📥 Export Data",
+        data=csv,
+        file_name="loan_portfolio.csv",
+        mime="text/csv"
+    )
 
 # Render portfolio analysis with all components
 with portfolio:
@@ -118,11 +130,3 @@ with portfolio:
 
     # Risk Analysis Section
     render_risk_analysis(filtered_df, get_risk_summary(filtered_df))
-
-# Add download functionality
-if st.sidebar.button("Export Data"):
-    csv = filtered_df.to_csv(index=False)
-    st.sidebar.download_button(label="Download CSV",
-                               data=csv,
-                               file_name="loan_portfolio.csv",
-                               mime="text/csv")
