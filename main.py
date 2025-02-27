@@ -5,11 +5,10 @@ from components.portfolio_overview import render_portfolio_overview
 from components.vintage_analysis import render_vintage_analysis
 from components.risk_analysis import render_risk_analysis
 
-st.set_page_config(
-    page_title="AI-Powered Risk Insights Dashboard",
-    page_icon="📊",
-    layout="wide"
-)
+st.set_page_config(page_title="AI-Powered Risk Insights Dashboard",
+                   page_icon="📊",
+                   layout="wide")
+
 
 # Load real data
 @st.cache_data
@@ -19,6 +18,7 @@ def load_data():
     risk_summary = get_risk_summary(df)
     risk_metrics = calculate_risk_metrics(df)
     return df, vintage_data, risk_summary, risk_metrics
+
 
 # Load data
 df, vintage_data, risk_summary, risk_metrics = load_data()
@@ -31,10 +31,7 @@ if 'selected_platform' not in st.session_state:
     st.session_state.selected_platform = 'Priority'  # Set default platform
 
 # Create tabs
-overview, portfolio = st.tabs([
-    "Overview",
-    "Portfolio Analysis"
-])
+overview, portfolio = st.tabs(["Overview", "Portfolio Analysis"])
 
 with overview:
     st.header("Dashboard Overview")
@@ -57,22 +54,31 @@ with overview:
     """)
 
     # Risk Category Explanation
-    st.subheader("Risk Categories Explained")
     risk_table = get_risk_category_table()
-    st.dataframe(
-        risk_table,
-        column_config={
-            "Risk Category": st.column_config.Column(width=200),
-            "Definition": st.column_config.Column(width=800),
-            "Severity": st.column_config.Column(width=150)
-        },
-        hide_index=True,
-        use_container_width=True
-    )
+
+    st.subheader("Risk Categories Explained")
+
+    st.data_editor(risk_table,
+                   column_config={
+                       "Risk Category":
+                       st.column_config.Column(width=250),
+                       "Definition":
+                       st.column_config.Column(
+                           width=700,
+                           help="Detailed explanation of the risk.",
+                           required=True),
+                       "Severity":
+                       st.column_config.Column(width=150,
+                                               help="Risk severity",
+                                               disabled=True)
+                   },
+                   hide_index=True,
+                   use_container_width=True)
 
     st.markdown("---")
     st.subheader("Platform Selection")
-    st.markdown("Use the selector below to focus on specific lending partners.")
+    st.markdown(
+        "Use the selector below to focus on specific lending partners.")
 
     # Platform selection
     platforms = sorted(df['platform'].unique().tolist())
@@ -86,11 +92,9 @@ with overview:
     # Find the index of Priority
     default_index = platform_options.index('Priority')
 
-    st.session_state.selected_platform = st.selectbox(
-        "Select Platform",
-        options=platform_options,
-        index=default_index
-    )
+    st.session_state.selected_platform = st.selectbox("Select Platform",
+                                                      options=platform_options,
+                                                      index=default_index)
 
 # Filter data based on selected platform
 filtered_df = df
@@ -117,9 +121,7 @@ with portfolio:
 # Add download functionality
 if st.sidebar.button("Export Data"):
     csv = filtered_df.to_csv(index=False)
-    st.sidebar.download_button(
-        label="Download CSV",
-        data=csv,
-        file_name="loan_portfolio.csv",
-        mime="text/csv"
-    )
+    st.sidebar.download_button(label="Download CSV",
+                               data=csv,
+                               file_name="loan_portfolio.csv",
+                               mime="text/csv")
