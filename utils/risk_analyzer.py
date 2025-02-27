@@ -1,9 +1,28 @@
 import pandas as pd
 
 def get_risk_summary(df):
-    """Generate risk summary statistics"""
+    """Generate risk summary statistics that works with any number of platforms"""
+    if len(df['platform'].unique()) == 0:
+        # Create empty DataFrame with expected columns if no data
+        return pd.DataFrame(columns=['No Risk', 'Liquidity Risk 🟢', 'Revenue Drop Risk 🟠', 'Non-Payment Risk 🔴'])
+    
+    # Group by platform and risk category
     risk_summary = df.groupby(['platform', 'risk_category']).size().unstack(fill_value=0)
+    
+    # Ensure all expected risk categories exist
+    for category in ['No Risk', 'Liquidity Risk 🟢', 'Revenue Drop Risk 🟠', 'Non-Payment Risk 🔴']:
+        if category not in risk_summary.columns:
+            risk_summary[category] = 0
+    
+    # Calculate percentages
     risk_summary_pct = risk_summary.div(risk_summary.sum(axis=1), axis=0)
+    
+    # Reformat data to long format that works better with Plotly
+    if len(risk_summary_pct) == 1:
+        # For single platform, transform to long format
+        platform_name = risk_summary_pct.index[0]
+        risk_summary_pct = risk_summary_pct.reset_index()
+    
     return risk_summary_pct
 
 def calculate_risk_metrics(df):

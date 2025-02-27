@@ -29,15 +29,31 @@ def render_risk_analysis(df, risk_summary):
         'Non-Payment Risk 🔴': '#FF4B4B'
     }
 
-    risk_fig = px.bar(
-        risk_summary.reset_index(),
-        x='platform',
-        y=['No Risk', 'Liquidity Risk 🟢', 'Revenue Drop Risk 🟠', 'Non-Payment Risk 🔴'],
-        title='Risk Distribution Across Platforms',
-        barmode='stack',
-        color_discrete_map=risk_colors
-    )
-    st.plotly_chart(risk_fig, use_container_width=True)
+    # Count risk categories directly from the DataFrame
+    if not df.empty:
+        # Create a summary DataFrame that works with any number of platforms
+        risk_counts = df.groupby('risk_category').size().reset_index(name='count')
+        risk_counts['percentage'] = risk_counts['count'] / len(df) * 100
+
+        fig = go.Figure()
+        for i, row in risk_counts.iterrows():
+            risk_category = row['risk_category']
+            fig.add_trace(go.Bar(
+                x=[risk_category],
+                y=[row['percentage']],
+                name=risk_category,
+                marker_color=risk_colors.get(risk_category, '#808080')
+            ))
+
+        fig.update_layout(
+            title='Risk Distribution',
+            xaxis_title='Risk Category',
+            yaxis_title='Percentage (%)',
+            barmode='group'
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No data available for the selected platform.")
 
     # At-risk loans
     st.subheader("High Risk Loans")
