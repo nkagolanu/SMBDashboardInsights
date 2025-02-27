@@ -103,17 +103,6 @@ filtered_df = df
 if st.session_state.selected_platform != 'All':
     filtered_df = df[df['platform'] == st.session_state.selected_platform]
 
-# Add export button in the main interface
-col1, col2 = st.columns([6, 1])
-with col2:
-    csv = filtered_df.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="📥 Export Data",
-        data=csv,
-        file_name="loan_portfolio.csv",
-        mime="text/csv"
-    )
-
 # Render portfolio analysis with all components
 with portfolio:
     st.header("Portfolio Analysis")
