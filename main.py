@@ -26,38 +26,68 @@ df, vintage_data, risk_summary, risk_metrics = load_data()
 # Main navigation
 st.title("AI-Powered Risk Insights Dashboard")
 
-tab1, tab2, tab3 = st.tabs([
+# Platform selection in session state
+if 'selected_platform' not in st.session_state:
+    st.session_state.selected_platform = 'Priority'  # Set default platform
+
+# Create tabs
+overview, portfolio, vintage, risk = st.tabs([
+    "Overview",
     "Portfolio Overview",
     "Vintage Analysis",
     "Risk Analysis"
 ])
 
-with tab1:
-    render_portfolio_overview(df)
+with overview:
+    st.header("Dashboard Overview")
 
-with tab2:
-    render_vintage_analysis(df, vintage_data)
+    st.markdown("""
+    ### Purpose
+    This AI-powered dashboard provides comprehensive risk insights for Pipe's embedded finance portfolio:
 
-with tab3:
-    render_risk_analysis(df, risk_summary)
+    🎯 **Portfolio Monitoring**
+    - Track active advances and repayment performance across platforms
+    - Monitor total capital deployed and risk exposure
+
+    📈 **Vintage Analysis**
+    - Analyze loan performance by cohort
+    - Identify trends in repayment patterns
+
+    ⚠️ **Risk Analysis**
+    - AI-driven risk categorization
+    - Early detection of repayment issues and revenue decline
+
+    Use the platform selector below to focus on specific lending partners.
+    """)
+
+    # Platform selection
+    st.session_state.selected_platform = st.selectbox(
+        "Select Platform",
+        options=['All'] + sorted(df['platform'].unique().tolist()),
+        index=1  # Priority will be at index 1 after sorting
+    )
+
+# Filter data based on selected platform
+filtered_df = df
+if st.session_state.selected_platform != 'All':
+    filtered_df = df[df['platform'] == st.session_state.selected_platform]
+
+# Render other tabs with filtered data
+with portfolio:
+    render_portfolio_overview(filtered_df)
+
+with vintage:
+    render_vintage_analysis(filtered_df, get_vintage_data(filtered_df))
+
+with risk:
+    render_risk_analysis(filtered_df, get_risk_summary(filtered_df))
 
 # Add download functionality
 if st.sidebar.button("Export Data"):
-    csv = df.to_csv(index=False)
+    csv = filtered_df.to_csv(index=False)
     st.sidebar.download_button(
         label="Download CSV",
         data=csv,
         file_name="loan_portfolio.csv",
         mime="text/csv"
     )
-
-# Add filters in sidebar
-st.sidebar.header("Filters")
-selected_platform = st.sidebar.selectbox(
-    "Select Platform",
-    ['All'] + sorted(df['platform'].unique().tolist())
-)
-
-if selected_platform != 'All':
-    df = df[df['platform'] == selected_platform]
-    st.experimental_rerun()
