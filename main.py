@@ -1,6 +1,6 @@
 import streamlit as st
 from utils.data_generator import load_loan_data, get_vintage_data
-from utils.risk_analyzer import categorize_risk, get_risk_summary, calculate_risk_metrics
+from utils.risk_analyzer import get_risk_summary, calculate_risk_metrics
 from components.portfolio_overview import render_portfolio_overview
 from components.vintage_analysis import render_vintage_analysis
 from components.risk_analysis import render_risk_analysis
@@ -61,10 +61,21 @@ with overview:
     """)
 
     # Platform selection
+    platforms = sorted(df['platform'].unique().tolist())
+    # Ensure Priority is first in the list after 'All'
+    if 'Priority' in platforms:
+        platforms.remove('Priority')
+        platform_options = ['All', 'Priority'] + platforms
+    else:
+        platform_options = ['All'] + platforms
+
+    # Find the index of Priority
+    default_index = platform_options.index('Priority')
+
     st.session_state.selected_platform = st.selectbox(
         "Select Platform",
-        options=['All'] + sorted(df['platform'].unique().tolist()),
-        index=1  # Priority will be at index 1 after sorting
+        options=platform_options,
+        index=default_index
     )
 
 # Filter data based on selected platform

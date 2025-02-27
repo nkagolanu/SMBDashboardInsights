@@ -4,7 +4,7 @@ from datetime import datetime
 
 def load_loan_data():
     """Load loan data from CSV file"""
-    df = pd.read_csv('attached_assets/Pipe_Risk_Analysis_Dataset.csv')
+    df = pd.read_csv('attached_assets/pipe_risk_analysis_data_final_exclusive.csv')
 
     # Convert date columns to datetime
     df['Loan Funded On'] = pd.to_datetime(df['Loan Funded On'])
@@ -15,11 +15,23 @@ def load_loan_data():
     df['repaid_amount'] = df['Repayment t-1 Amount'] + df['Repayment t-2 Amount']
     df['repayment_velocity'] = df['repaid_amount'] / df['Loan Amount']
 
-    # Convert risk flags to list
-    df['risk_flags'] = df['Risk Flags'].fillna('None').str.split(', ')
+    # Convert boolean risk flags
+    df['liquidity_risk'] = df['Liquidity Risk'].astype(bool)
+    df['revenue_drop_risk'] = df['Revenue Drop Risk'].astype(bool)
+    df['non_payment_risk'] = df['Non-Payment Risk'].astype(bool)
 
-    # Calculate revenue decline
-    df['revenue_decline'] = (df['Revenue t-1 Amount'] < df['Revenue t-2 Amount'] * 0.5)
+    # Create risk category
+    def get_risk_category(row):
+        if row['non_payment_risk']:
+            return 'Non-Payment Risk 🔴'
+        elif row['revenue_drop_risk']:
+            return 'Revenue Drop Risk 🟠'
+        elif row['liquidity_risk']:
+            return 'Liquidity Risk 🟢'
+        else:
+            return 'No Risk'
+
+    df['risk_category'] = df.apply(get_risk_category, axis=1)
 
     # Clean up column names
     df = df.rename(columns={

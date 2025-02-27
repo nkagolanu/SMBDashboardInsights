@@ -20,10 +20,8 @@ def render_portfolio_overview(df):
         st.metric("Overall Repayment Rate", f"{avg_repayment:.1f}%")
 
     with col4:
-        at_risk = len(df[df['Risk Flags'].notna() & (df['Risk Flags'] != 'None')])
+        at_risk = len(df[df['risk_category'] != 'No Risk'])
         st.metric("Loans at Risk", f"{at_risk:,}")
-
-    # No platform breakdown needed when viewing a single platform
 
     # Repayment trends
     st.subheader("Repayment Performance")
@@ -43,10 +41,17 @@ def render_portfolio_overview(df):
 
     # Risk distribution
     st.subheader("Risk Distribution")
-    risk_counts = df['Risk Flags'].fillna('None').value_counts()
+    risk_counts = df['risk_category'].value_counts()
     risk_fig = px.bar(
         x=risk_counts.index,
         y=risk_counts.values,
-        title='Distribution of Risk Flags'
+        title='Distribution of Risk Flags',
+        color=risk_counts.index,
+        color_discrete_map={
+            'No Risk': '#808080',
+            'Liquidity Risk 🟢': '#90EE90',
+            'Revenue Drop Risk 🟠': '#FFA500',
+            'Non-Payment Risk 🔴': '#FF4B4B'
+        }
     )
     st.plotly_chart(risk_fig, use_container_width=True)
