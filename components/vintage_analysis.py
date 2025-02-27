@@ -1,19 +1,10 @@
+
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 
 def render_vintage_analysis(df, vintage_data):
     st.header("Vintage & Cohort Analysis")
-    
-    # Platform filter
-    selected_platform = st.selectbox(
-        "Select Platform",
-        ['All'] + list(df['platform'].unique())
-    )
-    
-    filtered_df = df
-    if selected_platform != 'All':
-        filtered_df = df[df['platform'] == selected_platform]
     
     # Vintage performance chart
     st.subheader("Vintage Performance")
@@ -27,7 +18,7 @@ def render_vintage_analysis(df, vintage_data):
     
     # Cohort table
     st.subheader("Vintage Cohort Analysis")
-    cohort_metrics = filtered_df.groupby('vintage').agg({
+    cohort_metrics = df.groupby('vintage').agg({
         'amount': 'sum',
         'repaid_amount': 'sum',
         'loan_id': 'count'
