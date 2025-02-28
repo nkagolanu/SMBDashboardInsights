@@ -50,7 +50,7 @@ with overview:
     st.markdown("### Portfolio Selection")
 
     # Platform selection
-    platforms = sorted(df['platform'].unique().tolist())
+    platforms = sorted(df['Platform'].unique().tolist())
     # Ensure Priority is first in the list after 'All'
     if 'Priority' in platforms:
         platforms.remove('Priority')
@@ -139,7 +139,7 @@ with overview:
 # Filter data based on selected platform
 filtered_df = df
 if st.session_state.selected_platform != 'All':
-    filtered_df = df[df['platform'] == st.session_state.selected_platform]
+    filtered_df = df[df['Platform'] == st.session_state.selected_platform]
 
 # Render portfolio analysis with all components
 with portfolio:

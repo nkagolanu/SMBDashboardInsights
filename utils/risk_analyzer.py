@@ -2,12 +2,12 @@ import pandas as pd
 
 def get_risk_summary(df):
     """Generate risk summary statistics that works with any number of platforms"""
-    if len(df['platform'].unique()) == 0:
+    if len(df['Platform'].unique()) == 0:
         # Create empty DataFrame with expected columns if no data
         return pd.DataFrame(columns=['No Risk', 'Liquidity Risk 🟢', 'Revenue Drop Risk 🟠', 'Non-Payment Risk 🔴'])
     
     # Group by platform and risk category
-    risk_summary = df.groupby(['platform', 'risk_category']).size().unstack(fill_value=0)
+    risk_summary = df.groupby(['Platform', 'risk_category']).size().unstack(fill_value=0)
     
     # Ensure all expected risk categories exist
     for category in ['No Risk', 'Liquidity Risk 🟢', 'Revenue Drop Risk 🟠', 'Non-Payment Risk 🔴']:

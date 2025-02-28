@@ -60,10 +60,10 @@ def render_risk_analysis(df, risk_summary):
     high_risk_df = df[df['risk_category'] != 'No Risk'].sort_values('risk_category')
 
     st.dataframe(
-        high_risk_df[['business_name', 'platform', 'amount', 'repaid_amount', 'risk_category']]
+        high_risk_df[['Business Name', 'Platform', 'Amount', 'Repaid Amount', 'risk_category']]
         .head(10)
         .style.format({
-            'amount': '${:,.0f}',
-            'repaid_amount': '${:,.0f}'
+            'Amount': '${:,.0f}',
+            'Repaid Amount': '${:,.0f}'
         })
     )

@@ -8,7 +8,7 @@ def render_portfolio_overview(df):
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        total_deployed = df['amount'].sum()
+        total_deployed = df['Amount'].sum()
         st.metric("Total Capital Deployed", f"${total_deployed:,.0f}")
 
     with col2:
@@ -16,7 +16,7 @@ def render_portfolio_overview(df):
         st.metric("Active Advances", f"{active_loans:,}")
 
     with col3:
-        avg_repayment = (df['repaid_amount'].sum() / df['amount'].sum()) * 100
+        avg_repayment = (df['Repaid Amount'].sum() / df['Amount'].sum()) * 100
         st.metric("Overall Repayment Rate", f"{avg_repayment:.1f}%")
 
     with col4:
@@ -26,16 +26,16 @@ def render_portfolio_overview(df):
     # Repayment trends
     st.subheader("Repayment Performance")
     repayment_fig = go.Figure()
-    for platform in df['platform'].unique():
-        platform_data = df[df['platform'] == platform]
+    for platform in df['Platform'].unique():
+        platform_data = df[df['Platform'] == platform]
         repayment_fig.add_trace(go.Box(
-            y=platform_data['repayment_velocity'],
+            y=platform_data['repayment_rate'],  # Changed from repayment_velocity to repayment_rate
             name=platform,
             boxpoints='all'
         ))
     repayment_fig.update_layout(
-        title='Repayment Velocity Distribution by Platform',
-        yaxis_title='Repayment Velocity'
+        title='Repayment Rate Distribution by Platform',
+        yaxis_title='Repayment Rate'
     )
     st.plotly_chart(repayment_fig, use_container_width=True)
 
