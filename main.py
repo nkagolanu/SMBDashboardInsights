@@ -33,8 +33,16 @@ def load_data():
     return df, vintage_data, risk_summary, risk_metrics
 
 
-# Load data
-df, vintage_data, risk_summary, risk_metrics = load_data()
+# Load data with error handling
+try:
+    df, vintage_data, risk_summary, risk_metrics = load_data()
+    st.success("Data loaded successfully!")
+except Exception as e:
+    st.error(f"Error loading data: {str(e)}")
+    df = pd.DataFrame()
+    vintage_data = pd.DataFrame()
+    risk_summary = pd.DataFrame()
+    risk_metrics = {}
 
 # Main navigation
 st.title("Risk Insights Dashboard")

@@ -5,8 +5,15 @@ import numpy as np
 def load_loan_data():
     """Load loan data from CSV and transform for dashboard use"""
     try:
+        # Print current directory for debugging
+        import os
+        print(f"Current directory: {os.getcwd()}")
+        print(f"Files in attached_assets: {os.listdir('attached_assets')}")
+        
         # Load CSV file
-        df = pd.read_csv('attached_assets/pipe_risk_analysis_with_repaid.csv')
+        file_path = 'attached_assets/pipe_risk_analysis_with_repaid.csv'
+        print(f"Attempting to load file: {file_path}")
+        df = pd.read_csv(file_path)
 
         # Clean up column names for better code readability
         df = df.rename(
