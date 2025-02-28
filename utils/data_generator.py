@@ -29,7 +29,7 @@ def load_loan_data():
         else:
             return 'No Risk'
 
-    df['Risk Category'] = df.apply(get_risk_category, axis=1)
+    df['risk_category'] = df.apply(get_risk_category, axis=1)
 
     # Clean up column names
     df = df.rename(

@@ -6,6 +6,10 @@ def get_risk_summary(df):
         # Create empty DataFrame with expected columns if no data
         return pd.DataFrame(columns=['No Risk', 'Liquidity Risk 🟢', 'Revenue Drop Risk 🟠', 'Non-Payment Risk 🔴'])
     
+    # Ensure risk_category column exists (use Risk Category if it exists)
+    if 'risk_category' not in df.columns and 'Risk Category' in df.columns:
+        df['risk_category'] = df['Risk Category']
+    
     # Group by platform and risk category
     risk_summary = df.groupby(['Platform', 'risk_category']).size().unstack(fill_value=0)
     
