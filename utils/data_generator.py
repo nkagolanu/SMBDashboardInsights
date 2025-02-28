@@ -4,7 +4,7 @@ from datetime import datetime
 
 def load_loan_data():
     """Load loan data from CSV file"""
-    df = pd.read_csv('attached_assets/pipe_risk_analysis_data_final_exclusive.csv')
+    df = pd.read_csv('attached_assets/pipe_risk_analysis_loan_level_adjusted (1).csv')
 
     # Convert date columns to datetime
     df['Loan Funded On'] = pd.to_datetime(df['Loan Funded On'])
