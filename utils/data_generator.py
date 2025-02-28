@@ -30,6 +30,13 @@ def load_loan_data():
             return 'No Risk'
 
     df['risk_category'] = df.apply(get_risk_category, axis=1)
+    
+    # Create Vintage column in Q# YYYY format
+    def get_quarter_year(date):
+        quarter = f"Q{(date.month-1)//3+1} {date.year}"
+        return quarter
+        
+    df['Vintage'] = df['Date Funded'].apply(get_quarter_year)
 
     # Clean up column names
     df = df.rename(
@@ -47,11 +54,13 @@ def load_loan_data():
 
 def get_vintage_data(df):
     """Convert loan data into vintage analysis format"""
-    # Use 'Date Funded' instead of 'start_date'
-    df['vintage'] = df['Date Funded'].dt.strftime('%Y-%m')
+    # Use 'Vintage' column we created in load_loan_data
+    if 'Vintage' not in df.columns:
+        # Create Vintage column if it doesn't exist yet
+        df['Vintage'] = df['Date Funded'].apply(lambda date: f"Q{(date.month-1)//3+1} {date.year}")
 
     # Make sure we're using the renamed column names from load_loan_data
-    vintage_summary = df.groupby('vintage').agg({
+    vintage_summary = df.groupby('Vintage').agg({
         'Amount': 'sum',
         'Repaid Amount': 'sum',
         'Business Name': 'count'

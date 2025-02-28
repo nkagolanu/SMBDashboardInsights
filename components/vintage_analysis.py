@@ -11,9 +11,9 @@ def render_vintage_analysis(df, vintage_data):
     st.subheader("Vintage Performance")
     
     # Check if vintage_data has required columns
-    if 'vintage' in vintage_data.columns and 'repayment_rate' in vintage_data.columns:
+    if 'Vintage' in vintage_data.columns and 'repayment_rate' in vintage_data.columns:
         vintage_fig = px.line(vintage_data,
-                            x='vintage',
+                            x='Vintage',
                             y='repayment_rate',
                             title='Repayment Rate by Vintage')
         st.plotly_chart(vintage_fig, use_container_width=True)
@@ -28,8 +28,8 @@ def render_vintage_analysis(df, vintage_data):
     repaid_col = 'Repaid Amount' if 'Repaid Amount' in df.columns else 'repaid_amount'
     business_col = 'Business Name' if 'Business Name' in df.columns else 'business_name'
     
-    # Check if the vintage column exists
-    if 'vintage' in df.columns:
+    # Check if the Vintage column exists
+    if 'Vintage' in df.columns:
         # Check what columns are available and adjust accordingly
         agg_dict = {}
         if amount_col in df.columns:
@@ -40,7 +40,7 @@ def render_vintage_analysis(df, vintage_data):
             agg_dict[business_col] = 'count'
         
         if agg_dict:  # Only proceed if we have columns to aggregate
-            cohort_metrics = df.groupby('vintage').agg(agg_dict).reset_index()
+            cohort_metrics = df.groupby('Vintage').agg(agg_dict).reset_index()
             
             # Calculate repayment rate if both columns exist
             if amount_col in cohort_metrics.columns and repaid_col in cohort_metrics.columns:
