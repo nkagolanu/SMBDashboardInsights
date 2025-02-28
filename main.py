@@ -5,6 +5,7 @@ from utils.risk_analyzer import get_risk_summary, calculate_risk_metrics, get_ri
 from components.portfolio_overview import render_portfolio_overview
 from components.vintage_analysis import render_vintage_analysis
 from components.risk_analysis import render_risk_analysis
+from components.data_display import render_data_display
 
 st.set_page_config(page_title="AI-Powered Risk Insights Dashboard",
                    page_icon="📊",
@@ -43,7 +44,7 @@ if 'selected_platform' not in st.session_state:
     st.session_state.selected_platform = 'Priority'  # Set default platform
 
 # Create tabs
-overview, portfolio = st.tabs(["Overview", "Portfolio Analysis"])
+overview, portfolio, data = st.tabs(["Overview", "Portfolio Analysis", "Data"])
 
 with overview:
     st.markdown("### Portfolio Selection")
@@ -157,10 +158,8 @@ with portfolio:
     # Risk Analysis Section
     render_risk_analysis(filtered_df, get_risk_summary(filtered_df))
 
-# Add download functionality
-if st.sidebar.button("Export Data"):
-    csv = filtered_df.to_csv(index=False)
-    st.sidebar.download_button(label="Download CSV",
-                               data=csv,
-                               file_name="loan_portfolio.csv",
-                               mime="text/csv")
+# Data tab content
+with data:
+    render_data_display(filtered_df)
+
+# Remove sidebar export since we have it in the Data tab now
