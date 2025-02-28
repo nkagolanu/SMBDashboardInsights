@@ -42,7 +42,14 @@ def load_loan_data():
 
         # Convert loan date to datetime and create vintage
         df['funded_date'] = pd.to_datetime(df['funded_date'])
-        df['vintage'] = df['funded_date'].dt.strftime('Q%q %Y')  # Fixed column reference
+        
+        # Create vintage using quarter calculation
+        df['quarter'] = df['funded_date'].dt.quarter
+        df['year'] = df['funded_date'].dt.year
+        df['vintage'] = 'Q' + df['quarter'].astype(str) + ' ' + df['year'].astype(str)
+        
+        # Drop helper columns
+        df = df.drop(['quarter', 'year'], axis=1)
 
         # Add default platform if missing
         if 'platform' not in df.columns:
