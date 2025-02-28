@@ -36,7 +36,7 @@ def load_data():
 df, vintage_data, risk_summary, risk_metrics = load_data()
 
 # Main navigation
-st.title("AI-Powered Risk Insights Dashboard")
+st.title("Risk Insights Dashboard")
 
 # Platform selection in session state
 if 'selected_platform' not in st.session_state:
@@ -46,23 +46,19 @@ if 'selected_platform' not in st.session_state:
 overview, portfolio = st.tabs(["Overview", "Portfolio Analysis"])
 
 with overview:
-    st.header("Dashboard Overview")
 
     st.markdown("""
     ### Purpose
-    This AI-powered dashboard provides comprehensive risk insights for Pipe's embedded finance portfolio:
 
-    🎯 **Portfolio Monitoring**
-    - Track active advances and repayment performance across platforms
-    - Monitor total capital deployed and risk exposure
+    The **Pipe Risk Insights Dashboard** provides a real-time view of loan performance across embedded finance platforms. It helps the Risk Team track total lending activity, repayment trends, and emerging risks using three key risk categories: **Liquidity Risk, Revenue Drop Risk, and Non-Payment Risk.**
 
-    📈 **Vintage Analysis**
-    - Analyze loan performance by cohort
-    - Identify trends in repayment patterns
+    With this dashboard, users can:
 
-    ⚠️ **Risk Analysis**
-    - AI-driven risk categorization
-    - Early detection of repayment issues and revenue decline
+    ✅ **Monitor lending activity** across platforms with high-level metrics (total loans, fees, and loan distribution).  
+    ✅ **Analyze loan vintages** to assess repayment trends over time.  
+    ✅ **Identify early warning signs** using risk metrics tailored for revenue-based financing.  
+
+    This enables **data-driven underwriting adjustments** and **proactive risk mitigation** to optimize Pipe’s lending strategy.
     """)
 
     # Risk Category Explanation
@@ -70,9 +66,9 @@ with overview:
         "Risk Category":
         ["Liquidity Risk", "Revenue Drop Risk", "Non-Payment Risk"],
         "Definition": [
-            "Business revenue is stable, but their overall cash flow health is deteriorating. They might be overleveraged, have high expenses, or be showing early warning signs of financial strain.Repayments are still occurring at the expected percentage, but their total financial health is weakening.",
+            "Business revenue is stable, but their overall cash flow health is deteriorating. They might be overleveraged, have high expenses, or be showing early warning signs of financial strain. Repayments are still occurring at the expected percentage, but their total financial health is weakening.",
             "Business revenue has dropped ≥50% for multiple months, meaning their ability to make repayments is significantly reduced. They are still making some repayments, but their funding risk is increasing.",
-            "Business has had $0 revenue for 60+ days, meaning no repayments are occurring.This suggests business closure, switching platforms, or severe distress."
+            "Business has had $0 revenue for 60+ days, meaning no repayments are occurring. This suggests business closure, switching platforms, or severe distress."
         ],
         "Severity": ["Mild", "Moderate", "Severe"]
     }
@@ -86,7 +82,7 @@ with overview:
 
     risk_table["Definition"] = risk_table["Definition"].apply(format_html)
 
-    st.subheader("Risk Categories")
+    st.markdown("#### Risk Categories")
 
     # Use Markdown-rendered table for styling
     st.markdown("""
@@ -114,7 +110,7 @@ with overview:
     st.markdown("**Why these Three Risk Metrics**")
 
     st.markdown(
-        "Traditional delinquency metrics like 90 days past due may not work for Pipe’s revenue-based financing because there are no fixed repayment schedules—repayments fluctuate with revenue. Instead, these three risk metrics may capture signs of financial distress"
+        "Traditional delinquency metrics like 90 days past due may not work for Pipe’s revenue-based financing because there are no fixed repayment schedules—repayments fluctuate with revenue. Instead, these three risk metrics are one way to capture signs of financial distress."
     )
 
     st.markdown("---")
