@@ -91,5 +91,17 @@ def get_vintage_data(df):
     # Calculate repayment rate
     vintage_data['repayment_rate'] = vintage_data[
         'repaid_amount'] / vintage_data['amount']
+    
+    # Add risk analysis metrics
+    risk_by_vintage = df.groupby(['vintage', 'risk_category']).size().unstack(fill_value=0).reset_index()
+    if 'Non-Payment Risk' in risk_by_vintage.columns:
+        risk_by_vintage['total_loans'] = risk_by_vintage.drop('vintage', axis=1).sum(axis=1)
+        risk_by_vintage['non_payment_risk_pct'] = (risk_by_vintage['Non-Payment Risk'] / 
+                                                  risk_by_vintage['total_loans'] * 100)
+        
+        # Merge risk metrics with vintage data
+        vintage_data = pd.merge(vintage_data, 
+                              risk_by_vintage[['vintage', 'Non-Payment Risk', 'non_payment_risk_pct']], 
+                              on='vintage', how='left')
 
     return vintage_data
