@@ -21,6 +21,11 @@ def render_portfolio_overview(df):
         total_fees = df['fees'].sum()
         st.metric("Total Fees Collected", f"${total_fees:,.0f}")
 
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        total_outstanding_loans = df['amount'].count()
+        st.metric("Total Outstanding Loans", f"{total_outstanding_loans}")
+
     # Loan distribution by size
     st.subheader("Loan Distribution by Size")
 

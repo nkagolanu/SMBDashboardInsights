@@ -19,11 +19,6 @@ def render_data_display(df):
 
     # Display number of records and max loan amount
     st.write(f"Displaying {len(filtered_data)} records")
-    
-    # Show max loan amount if data exists and column exists
-    if not filtered_data.empty and 'amount' in filtered_data.columns:
-        max_loan = filtered_data['amount'].max()
-        st.write(f"Maximum loan amount: ${max_loan:,.0f}")
 
     # Allow column selection
     all_columns = df.columns.tolist()
@@ -51,7 +46,7 @@ def render_data_display(df):
 
     # Keep a sortable copy of the data
     sortable_data = filtered_data.copy()
-    
+
     # Format currency columns for display purposes
     display_data = filtered_data.copy()
 
@@ -59,7 +54,7 @@ def render_data_display(df):
     if 'funded_date' in display_data.columns:
         display_data['funded_date'] = pd.to_datetime(
             display_data['funded_date']).dt.date
-    
+
     # Add dollar sign and format Amount column if it exists
     if 'amount' in display_data.columns:
         display_data['amount'] = display_data['amount'].apply(
@@ -84,23 +79,25 @@ def render_data_display(df):
             hide_index=True,
             # Provide the original numeric data for proper sorting
             column_config={
-                "amount": st.column_config.NumberColumn(
+                "amount":
+                st.column_config.NumberColumn(
                     format="$%d",
                     help="Loan amount",
                     step=1000,
                 ),
-                "repaid_amount": st.column_config.NumberColumn(
+                "repaid_amount":
+                st.column_config.NumberColumn(
                     format="$%d",
                     help="Amount repaid so far",
                     step=1000,
                 ),
-                "fees": st.column_config.NumberColumn(
+                "fees":
+                st.column_config.NumberColumn(
                     format="$%d",
                     help="Fees collected",
                     step=100,
                 )
-            }
-        )
+            })
     else:
         st.dataframe(
             data=display_data,
@@ -108,23 +105,25 @@ def render_data_display(df):
             hide_index=True,
             # Provide the original numeric data for proper sorting
             column_config={
-                "amount": st.column_config.NumberColumn(
+                "amount":
+                st.column_config.NumberColumn(
                     format="$%d",
                     help="Loan amount",
                     step=1000,
                 ),
-                "repaid_amount": st.column_config.NumberColumn(
+                "repaid_amount":
+                st.column_config.NumberColumn(
                     format="$%d",
                     help="Amount repaid so far",
                     step=1000,
                 ),
-                "fees": st.column_config.NumberColumn(
+                "fees":
+                st.column_config.NumberColumn(
                     format="$%d",
                     help="Fees collected",
                     step=100,
                 )
-            }
-        )
+            })
 
     # Add download functionality
     csv = filtered_data.to_csv(index=False)
