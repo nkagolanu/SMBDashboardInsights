@@ -4,6 +4,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 
+import streamlit as st
+import plotly.express as px
+import pandas as pd
+
 def render_vintage_analysis(df, vintage_data):
     st.header("Vintage & Cohort Analysis")
 
@@ -11,9 +15,9 @@ def render_vintage_analysis(df, vintage_data):
     st.subheader("Vintage Performance")
     
     # Check if vintage_data has required columns
-    if 'Vintage' in vintage_data.columns and 'repayment_rate' in vintage_data.columns:
+    if 'vintage' in vintage_data.columns and 'repayment_rate' in vintage_data.columns:
         vintage_fig = px.line(vintage_data,
-                            x='Vintage',
+                            x='vintage',
                             y='repayment_rate',
                             title='Repayment Rate by Vintage')
         st.plotly_chart(vintage_fig, use_container_width=True)

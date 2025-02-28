@@ -1,10 +1,11 @@
+
 import streamlit as st
 from utils.data_generator import load_loan_data, get_vintage_data
 from utils.risk_analyzer import get_risk_summary, calculate_risk_metrics, get_risk_category_table
 from components.portfolio_overview import render_portfolio_overview
 from components.vintage_analysis import render_vintage_analysis
 from components.risk_analysis import render_risk_analysis
-from components.data_display import render_data_display #Added from original
+from components.data_display import render_data_display
 
 st.set_page_config(page_title="AI-Powered Risk Insights Dashboard",
                    page_icon="📊",
@@ -39,10 +40,10 @@ if 'selected_platform' not in st.session_state:
     st.session_state.selected_platform = 'Priority'  # Set default platform
 
 # Create tabs
-overview, portfolio, data_tab = st.tabs([ #Added data_tab from original
+overview, portfolio, data_tab = st.tabs([
     "Overview",
     "Portfolio Analysis",
-    "Data" #Added from original
+    "Data"
 ])
 
 with overview:
@@ -68,15 +69,16 @@ with overview:
 
     # Risk Category Explanation
     st.subheader("Risk Categories Explained")
-    risk_table = get_risk_category_table() #Using the function from original code.  Assumed to exist.
+    risk_table = get_risk_category_table()
     st.dataframe(
         risk_table,
         column_config={
-            "Risk Category": st.column_config.Column(width=200),
-            "Definition": st.column_config.Column(width=800),
-            "Severity": st.column_config.Column(width=150)
+            "Risk Category": st.column_config.Column(width="medium"),
+            "Definition": st.column_config.TextColumn(width="large", max_chars=300),
+            "Severity": st.column_config.Column(width="small")
         },
-        hide_index=True
+        hide_index=True,
+        use_container_width=True
     )
 
     st.markdown("---")
@@ -93,7 +95,7 @@ with overview:
         platform_options = ['All'] + platforms
 
     # Find the index of Priority
-    default_index = platform_options.index('Priority') if 'Priority' in platform_options else 0 #Handle case where Priority might not exist
+    default_index = platform_options.index('Priority') if 'Priority' in platform_options else 0
 
     st.session_state.selected_platform = st.selectbox(
         "Select Platform",
@@ -108,8 +110,6 @@ if st.session_state.selected_platform != 'All':
 
 # Render portfolio analysis with all components
 with portfolio:
-    st.header("Portfolio Analysis")
-
     # Portfolio Overview Section
     render_portfolio_overview(filtered_df)
 
@@ -123,5 +123,5 @@ with portfolio:
     # Risk Analysis Section
     render_risk_analysis(filtered_df, get_risk_summary(filtered_df))
 
-with data_tab: #Data tab content from original code.
+with data_tab:
     render_data_display(filtered_df)
