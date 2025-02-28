@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 
 def render_data_display(df):
@@ -56,11 +57,15 @@ def render_data_display(df):
         display_data['Repaid Amount'] = display_data['Repaid Amount'].apply(
             lambda x: f"${x:,.0f}")
 
-    # Display the filtered data with selected columns
+    # Format Date Funded column if it exists
+    if 'Date Funded' in display_data.columns:
+        display_data['Date Funded'] = pd.to_datetime(display_data['Date Funded']).dt.date
+
+    # Display the filtered data with selected columns, hiding the index
     if selected_columns:
-        st.dataframe(display_data[selected_columns], use_container_width=True)
+        st.dataframe(display_data[selected_columns], use_container_width=True, hide_index=True)
     else:
-        st.dataframe(display_data, use_container_width=True)
+        st.dataframe(display_data, use_container_width=True, hide_index=True)
 
     # Add download functionality
     csv = filtered_data.to_csv(index=False)
