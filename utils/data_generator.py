@@ -15,6 +15,9 @@ def load_loan_data():
         print(f"Attempting to load file: {file_path}")
         df = pd.read_csv(file_path)
 
+        # Print column names for debugging
+        print(f"CSV columns: {df.columns.tolist()}")
+        
         # Clean up column names for better code readability
         df = df.rename(
             columns={
@@ -23,7 +26,7 @@ def load_loan_data():
                 'Loan Amount': 'amount',
                 'Pipe Fees': 'fees',
                 'Loan Funded On': 'funded_date',
-                'Repaid Total So Far': 'repayment_amount',
+                'Repaid Total So Far': 'repaid_amount',  # Fixed column name
                 'Liquidity Risk': 'liquidity_risk',
                 'Revenue Drop Risk': 'revenue_drop_risk',
                 'Non-Payment Risk': 'non_payment_risk'
@@ -39,8 +42,13 @@ def load_loan_data():
 
         # Convert loan date to datetime and create vintage
         df['funded_date'] = pd.to_datetime(df['funded_date'])
-        df['vintage'] = df['loan_funded_on'].dt.strftime('Q%q %Y')
+        df['vintage'] = df['funded_date'].dt.strftime('Q%q %Y')  # Fixed column reference
 
+        # Add default platform if missing
+        if 'platform' not in df.columns:
+            print("Warning: 'platform' column not found in CSV, adding default value")
+            df['platform'] = 'Priority'  # Default platform
+            
         return df
     except Exception as e:
         print(f"Error loading data: {str(e)}")
