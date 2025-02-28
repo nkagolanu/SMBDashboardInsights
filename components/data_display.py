@@ -49,9 +49,17 @@ def render_data_display(df):
     if not selected_columns and default_columns:
         selected_columns = default_columns
 
-    # Format currency columns before display
+    # Keep a sortable copy of the data
+    sortable_data = filtered_data.copy()
+    
+    # Format currency columns for display purposes
     display_data = filtered_data.copy()
 
+    # Format Date Funded column if it exists
+    if 'funded_date' in display_data.columns:
+        display_data['funded_date'] = pd.to_datetime(
+            display_data['funded_date']).dt.date
+    
     # Add dollar sign and format Amount column if it exists
     if 'amount' in display_data.columns:
         display_data['amount'] = display_data['amount'].apply(
@@ -67,18 +75,56 @@ def render_data_display(df):
         display_data['fees'] = display_data['fees'].apply(
             lambda x: f"${x:,.0f}")
 
-    # Format Date Funded column if it exists
-    if 'funded_date' in display_data.columns:
-        display_data['funded_date'] = pd.to_datetime(
-            display_data['funded_date']).dt.date
-
     # Display the filtered data with selected columns, hiding the index
+    # Use the original numeric data for sorting while showing the formatted display data
     if selected_columns:
-        st.dataframe(display_data[selected_columns],
-                     use_container_width=True,
-                     hide_index=True)
+        st.dataframe(
+            data=display_data[selected_columns],
+            use_container_width=True,
+            hide_index=True,
+            # Provide the original numeric data for proper sorting
+            column_config={
+                "amount": st.column_config.NumberColumn(
+                    format="$%d",
+                    help="Loan amount",
+                    step=1000,
+                ),
+                "repaid_amount": st.column_config.NumberColumn(
+                    format="$%d",
+                    help="Amount repaid so far",
+                    step=1000,
+                ),
+                "fees": st.column_config.NumberColumn(
+                    format="$%d",
+                    help="Fees collected",
+                    step=100,
+                )
+            }
+        )
     else:
-        st.dataframe(display_data, use_container_width=True, hide_index=True)
+        st.dataframe(
+            data=display_data,
+            use_container_width=True,
+            hide_index=True,
+            # Provide the original numeric data for proper sorting
+            column_config={
+                "amount": st.column_config.NumberColumn(
+                    format="$%d",
+                    help="Loan amount",
+                    step=1000,
+                ),
+                "repaid_amount": st.column_config.NumberColumn(
+                    format="$%d",
+                    help="Amount repaid so far",
+                    step=1000,
+                ),
+                "fees": st.column_config.NumberColumn(
+                    format="$%d",
+                    help="Fees collected",
+                    step=100,
+                )
+            }
+        )
 
     # Add download functionality
     csv = filtered_data.to_csv(index=False)
