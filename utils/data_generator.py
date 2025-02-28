@@ -36,7 +36,8 @@ def load_loan_data():
         quarter = f"Q{(date.month-1)//3+1} {date.year}"
         return quarter
         
-    df['Vintage'] = df['Date Funded'].apply(get_quarter_year)
+    # Use 'Loan Funded On' instead of 'Date Funded' since that's the column we have
+    df['Vintage'] = df['Loan Funded On'].apply(get_quarter_year)
 
     # Clean up column names
     df = df.rename(
