@@ -31,6 +31,7 @@ def render_portfolio_overview(df, platform_name="All"):
         st.metric("Average Loan Amount", f"${avg_loan_amount:,.0f}")
 
     # Loan distribution by size
+    st.markdown("---")
     st.subheader("Loan Distribution by Size")
 
     # Create size categories
@@ -69,7 +70,7 @@ def render_portfolio_overview(df, platform_name="All"):
         size_counts,
         x='loan_size_category',
         y='Count',
-        title='Distribution of Loans by Size',
+        title='',
         color='loan_size_category',
         color_discrete_map={
             "Small ($10K-$50K)": "#90EE90",  # Light green
@@ -88,7 +89,7 @@ def render_portfolio_overview(df, platform_name="All"):
     risk_counts = df['risk_category'].value_counts()
     risk_fig = px.pie(values=risk_counts.values,
                       names=risk_counts.index,
-                      title='Distribution of Risk Flags',
+                      title='',
                       color=risk_counts.index,
                       color_discrete_map={
                           'No Risk': '#808080',
@@ -99,3 +100,4 @@ def render_portfolio_overview(df, platform_name="All"):
     risk_fig.update_traces(textposition='inside', textinfo='percent+label')
     risk_fig.update_layout(margin=dict(t=30, b=0, l=0, r=0))
     st.plotly_chart(risk_fig, use_container_width=True)
+    st.markdown("---")

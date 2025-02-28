@@ -26,7 +26,6 @@ def render_vintage_analysis(df, vintage_data):
         vintage_risk = vintage_risk.sort_values('vintage')
 
         # Identify highest risk vintages
-        st.subheader("Highest Risk Vintages")
         high_risk_vintages = vintage_risk.sort_values('Non-Payment Risk %',
                                                       ascending=False).head(3)
         st.write("Top 3 vintages with highest percentage of Non-Payment Risk:")
@@ -44,13 +43,13 @@ def render_vintage_analysis(df, vintage_data):
                        markers=True,
                        color_discrete_sequence=['#FF4B4B'])
         fig2.update_layout(yaxis_title='Non-Payment Risk %',
-                          margin=dict(t=30, b=0, l=0, r=0))
+                           margin=dict(t=30, b=0, l=0, r=0))
 
         # Display charts
         st.plotly_chart(fig2, use_container_width=True)
 
         # Display data table with all risk categories
-        st.subheader("Vintage Risk Breakdown")
+        st.write("**Vintage Risk Breakdown**")
         risk_columns = [
             col for col in vintage_risk.columns
             if col != 'vintage' and 'Risk' in col and '%' not in col
