@@ -47,7 +47,7 @@ def render_portfolio_overview(df):
 
     # Ensure proper order
     category_order = [
-        "Small ($10K-$50K)", "Medium ($50K-$150K)", "Large ($150K-$300K)"
+        "Small ($10K-$50K)", "Medium ($50K-$150K)", "Large (>$150K)"
     ]
     size_counts['loan_size_category'] = pd.Categorical(
         size_counts['loan_size_category'],
@@ -65,7 +65,7 @@ def render_portfolio_overview(df):
         color_discrete_map={
             "Small ($10K-$50K)": "#90EE90",  # Light green
             "Medium ($50K-$150K)": "#4682B4",  # Steel blue
-            "Large ($150K-$300K)": "#FFD700"  # Gold
+            "Large (>$150K)": "#FFD700"  # Gold
         })
     size_fig.update_layout(xaxis_title='Loan Size Category',
                            yaxis_title='Number of Loans')
