@@ -14,3 +14,5 @@ font = "sans serif"
 [ui]
 hideTopBar = false
 hideSidebarNav = true
+hideMainMenu = true  # This hides the main menu button in the top-right
+hideSidebarOnStartup = true  # This hides the sidebar on startup
