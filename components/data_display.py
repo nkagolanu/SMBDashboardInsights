@@ -27,7 +27,7 @@ def render_data_display(df):
     default_columns = []
     for col in [
             'Business Name', 'Platform', 'Amount', 'Repaid Amount',
-            'risk_category', 'Date Funded', 'Vintage'
+            'Risk Category', 'Date Funded', 'Vintage'
     ]:
         if col in all_columns:
             default_columns.append(col)

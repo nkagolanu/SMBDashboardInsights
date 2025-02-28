@@ -29,7 +29,7 @@ def load_loan_data():
         else:
             return 'No Risk'
 
-    df['risk_category'] = df.apply(get_risk_category, axis=1)
+    df['Risk Category'] = df.apply(get_risk_category, axis=1)
     
     # Create Vintage column in Q# YYYY format
     def get_quarter_year(date):

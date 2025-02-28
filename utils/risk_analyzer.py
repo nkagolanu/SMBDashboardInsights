@@ -6,12 +6,12 @@ def get_risk_summary(df):
         # Create empty DataFrame with expected columns if no data
         return pd.DataFrame(columns=['No Risk', 'Liquidity Risk 🟢', 'Revenue Drop Risk 🟠', 'Non-Payment Risk 🔴'])
     
-    # Ensure risk_category column exists (use Risk Category if it exists)
-    if 'risk_category' not in df.columns and 'Risk Category' in df.columns:
-        df['risk_category'] = df['Risk Category']
+    # Ensure Risk Category column exists
+    if 'risk_category' in df.columns and 'Risk Category' not in df.columns:
+        df['Risk Category'] = df['risk_category']
     
     # Group by platform and risk category
-    risk_summary = df.groupby(['Platform', 'risk_category']).size().unstack(fill_value=0)
+    risk_summary = df.groupby(['Platform', 'Risk Category']).size().unstack(fill_value=0)
     
     # Ensure all expected risk categories exist
     for category in ['No Risk', 'Liquidity Risk 🟢', 'Revenue Drop Risk 🟠', 'Non-Payment Risk 🔴']:
@@ -32,7 +32,7 @@ def get_risk_summary(df):
 def calculate_risk_metrics(df):
     """Calculate additional risk metrics"""
     metrics = {
-        'total_at_risk': len(df[df['risk_category'] != 'No Risk']),
+        'total_at_risk': len(df[df['Risk Category'] != 'No Risk']),
         'liquidity_risk': len(df[df['liquidity_risk']]),
         'revenue_drop_risk': len(df[df['revenue_drop_risk']]),
         'non_payment_risk': len(df[df['non_payment_risk']]),

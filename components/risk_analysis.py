@@ -32,12 +32,12 @@ def render_risk_analysis(df, risk_summary):
     # Count risk categories directly from the DataFrame
     if not df.empty:
         # Create a summary DataFrame that works with any number of platforms
-        risk_counts = df.groupby('risk_category').size().reset_index(name='count')
+        risk_counts = df.groupby('Risk Category').size().reset_index(name='count')
         risk_counts['percentage'] = risk_counts['count'] / len(df) * 100
 
         fig = go.Figure()
         for i, row in risk_counts.iterrows():
-            risk_category = row['risk_category']
+            risk_category = row['Risk Category']
             fig.add_trace(go.Bar(
                 x=[risk_category],
                 y=[row['percentage']],
@@ -57,10 +57,10 @@ def render_risk_analysis(df, risk_summary):
 
     # At-risk loans
     st.subheader("High Risk Loans")
-    high_risk_df = df[df['risk_category'] != 'No Risk'].sort_values('risk_category')
+    high_risk_df = df[df['Risk Category'] != 'No Risk'].sort_values('Risk Category')
 
     st.dataframe(
-        high_risk_df[['Business Name', 'Platform', 'Amount', 'Repaid Amount', 'risk_category']]
+        high_risk_df[['Business Name', 'Platform', 'Amount', 'Repaid Amount', 'Risk Category']]
         .head(10)
         .style.format({
             'Amount': '${:,.0f}',

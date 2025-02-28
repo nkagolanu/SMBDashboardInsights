@@ -20,7 +20,7 @@ def render_portfolio_overview(df):
         st.metric("Overall Repayment Rate", f"{avg_repayment:.1f}%")
 
     with col4:
-        at_risk = len(df[df['risk_category'] != 'No Risk'])
+        at_risk = len(df[df['Risk Category'] != 'No Risk'])
         st.metric("Loans at Risk", f"{at_risk:,}")
 
     # Repayment trends
@@ -41,7 +41,7 @@ def render_portfolio_overview(df):
 
     # Risk distribution
     st.subheader("Risk Distribution")
-    risk_counts = df['risk_category'].value_counts()
+    risk_counts = df['Risk Category'].value_counts()
     risk_fig = px.bar(
         x=risk_counts.index,
         y=risk_counts.values,
