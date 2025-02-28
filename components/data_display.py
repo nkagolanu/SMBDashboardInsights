@@ -1,4 +1,3 @@
-
 import streamlit as st
 
 
@@ -22,16 +21,20 @@ def render_data_display(df):
 
     # Allow column selection
     all_columns = df.columns.tolist()
-    
+
     # Check if the column exists before setting as default
     default_columns = []
-    for col in ['Business Name', 'Platform', 'Amount', 'Repaid Amount', 'risk_category']:
+    for col in [
+            'Business Name', 'Platform', 'Amount', 'Repaid Amount',
+            'risk_category', 'Date Funded'
+    ]:
         if col in all_columns:
             default_columns.append(col)
-    
+
     if not default_columns and all_columns:  # If none of the preferred defaults exist
-        default_columns = all_columns[:min(5, len(all_columns))]  # Use first 5 columns or less
-    
+        default_columns = all_columns[:min(5, len(
+            all_columns))]  # Use first 5 columns or less
+
     selected_columns = st.multiselect("Select columns to display",
                                       options=all_columns,
                                       default=default_columns)
@@ -42,15 +45,17 @@ def render_data_display(df):
 
     # Format currency columns before display
     display_data = filtered_data.copy()
-    
+
     # Add dollar sign and format Amount column if it exists
     if 'Amount' in display_data.columns:
-        display_data['Amount'] = display_data['Amount'].apply(lambda x: f"${x:,.0f}")
-    
+        display_data['Amount'] = display_data['Amount'].apply(
+            lambda x: f"${x:,.0f}")
+
     # Add dollar sign and remove decimals from Repaid Amount column if it exists
     if 'Repaid Amount' in display_data.columns:
-        display_data['Repaid Amount'] = display_data['Repaid Amount'].apply(lambda x: f"${x:,.0f}")
-    
+        display_data['Repaid Amount'] = display_data['Repaid Amount'].apply(
+            lambda x: f"${x:,.0f}")
+
     # Display the filtered data with selected columns
     if selected_columns:
         st.dataframe(display_data[selected_columns], use_container_width=True)
