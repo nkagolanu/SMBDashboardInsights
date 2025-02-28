@@ -8,7 +8,18 @@ from components.risk_analysis import render_risk_analysis
 
 st.set_page_config(page_title="AI-Powered Risk Insights Dashboard",
                    page_icon="📊",
-                   layout="wide")
+                   layout="wide",
+                   initial_sidebar_state="collapsed")
+
+# Hide the sidebar hamburger menu completely
+hide_streamlit_style = """
+<style>
+    div[data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 
 # Load real data
