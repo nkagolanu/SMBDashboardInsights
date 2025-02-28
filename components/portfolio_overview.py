@@ -4,8 +4,8 @@ import plotly.graph_objects as go
 import pandas as pd
 
 
-def render_portfolio_overview(df):
-    st.header("Portfolio Overview")
+def render_portfolio_overview(df, platform_name="All"):
+    st.header(f"{platform_name} Overview")
 
     col1, col2, col3 = st.columns(3)
 

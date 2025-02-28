@@ -153,7 +153,7 @@ if st.session_state.selected_platform != 'All':
 with portfolio:
 
     # Portfolio Overview Section
-    render_portfolio_overview(filtered_df)
+    render_portfolio_overview(filtered_df, st.session_state.selected_platform)
 
     st.markdown("---")
 
