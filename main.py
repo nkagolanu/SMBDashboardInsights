@@ -46,9 +46,7 @@ if 'selected_platform' not in st.session_state:
 overview, portfolio = st.tabs(["Overview", "Portfolio Analysis"])
 
 with overview:
-    st.subheader("Platform Selection")
-    st.markdown(
-        "Use the selector below to focus on specific lending partners.")
+    st.markdown("### Portfolio Selection")
 
     # Platform selection
     platforms = sorted(df['platform'].unique().tolist())
@@ -62,9 +60,12 @@ with overview:
     # Find the index of Priority
     default_index = platform_options.index('Priority')
 
-    st.session_state.selected_platform = st.selectbox("Select Platform",
-                                                      options=platform_options,
-                                                      index=default_index)
+    st.session_state.selected_platform = st.selectbox(
+        "Select Platform to run analysis",
+        options=platform_options,
+        index=default_index)
+
+    st.markdown("---")
 
     st.markdown("""
     ### Purpose
