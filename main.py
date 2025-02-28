@@ -44,7 +44,8 @@ if 'selected_platform' not in st.session_state:
     st.session_state.selected_platform = 'Priority'  # Set default platform
 
 # Create tabs
-overview, portfolio, data_tab = st.tabs(["Overview", "Portfolio Analysis", "Data"])
+overview, portfolio, data_tab = st.tabs(
+    ["Overview", "Portfolio Analysis", "Data"])
 
 with overview:
     st.markdown("### Portfolio Selection")
@@ -143,7 +144,6 @@ if st.session_state.selected_platform != 'All':
 
 # Render portfolio analysis with all components
 with portfolio:
-    st.header("Portfolio Analysis")
 
     # Portfolio Overview Section
     render_portfolio_overview(filtered_df)
