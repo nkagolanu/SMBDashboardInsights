@@ -76,7 +76,7 @@ with overview:
 
     With this dashboard, users can:
 
-    ✅ **Monitor lending activity** across platforms with high-level metrics (total loans, fees, and loan distribution).  
+    ✅ **Monitor outstanding lending activity** across platforms with high-level metrics (total loans, fees, and loan distribution).  
     ✅ **Analyze loan vintages** to assess repayment trends over time.  
     ✅ **Identify early warning signs** using risk metrics tailored for revenue-based financing.  
 
