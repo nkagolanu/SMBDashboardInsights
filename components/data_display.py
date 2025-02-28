@@ -1,3 +1,4 @@
+
 import streamlit as st
 
 
@@ -21,19 +22,29 @@ def render_data_display(df):
 
     # Allow column selection
     all_columns = df.columns.tolist()
-    default_columns = [
-        'Business Name', 'Platform', 'Amount', 'Repaid Amount', 'Risk Category'
-    ]
+    
+    # Check if the column exists before setting as default
+    default_columns = []
+    for col in ['Business Name', 'Platform', 'Amount', 'Repaid Amount', 'risk_category']:
+        if col in all_columns:
+            default_columns.append(col)
+    
+    if not default_columns and all_columns:  # If none of the preferred defaults exist
+        default_columns = all_columns[:min(5, len(all_columns))]  # Use first 5 columns or less
+    
     selected_columns = st.multiselect("Select columns to display",
                                       options=all_columns,
                                       default=default_columns)
 
     # If no columns selected, use default columns
-    if not selected_columns:
+    if not selected_columns and default_columns:
         selected_columns = default_columns
 
     # Display the filtered data with selected columns
-    st.dataframe(filtered_data[selected_columns], use_container_width=True)
+    if selected_columns:
+        st.dataframe(filtered_data[selected_columns], use_container_width=True)
+    else:
+        st.dataframe(filtered_data, use_container_width=True)
 
     # Add download functionality
     csv = filtered_data.to_csv(index=False)
