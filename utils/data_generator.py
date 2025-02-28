@@ -67,7 +67,18 @@ def get_vintage_data(df):
     # Use 'Vintage' column we created in load_loan_data
     if 'Vintage' not in df.columns and date_column is not None:
         # Create Vintage column if it doesn't exist yet
-        df['Vintage'] = df[date_column].apply(lambda date: f"Q{(date.month-1)//3+1} {date.year}")
+        # First make sure the date column contains datetime objects
+        try:
+            # Convert to datetime if it's not already
+            if not pd.api.types.is_datetime64_any_dtype(df[date_column]):
+                df[date_column] = pd.to_datetime(df[date_column], errors='coerce')
+            
+            # Now create the Vintage column safely
+            df['Vintage'] = df[date_column].apply(
+                lambda date: f"Q{(date.month-1)//3+1} {date.year}" if pd.notnull(date) else "Unknown")
+        except:
+            # Fallback if conversion fails
+            df['Vintage'] = 'Q1 2023'  # Default value
     elif 'Vintage' not in df.columns:
         # If no date column available, create a default vintage
         df['Vintage'] = 'Q1 2023'  # Default value
