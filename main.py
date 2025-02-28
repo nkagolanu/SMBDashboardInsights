@@ -44,7 +44,7 @@ if 'selected_platform' not in st.session_state:
     st.session_state.selected_platform = 'Priority'  # Set default platform
 
 # Create tabs
-overview, portfolio, data = st.tabs(["Overview", "Portfolio Analysis", "Data"])
+overview, portfolio, data_tab = st.tabs(["Overview", "Portfolio Analysis", "Data"])
 
 with overview:
     st.markdown("### Portfolio Selection")
@@ -159,7 +159,7 @@ with portfolio:
     render_risk_analysis(filtered_df, get_risk_summary(filtered_df))
 
 # Data tab content
-with data:
+with data_tab:
     render_data_display(filtered_df)
 
 # Remove sidebar export since we have it in the Data tab now
