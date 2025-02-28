@@ -76,17 +76,19 @@ def render_portfolio_overview(df, platform_name="All"):
                            yaxis_title='Number of Loans')
     st.plotly_chart(size_fig, use_container_width=True)
 
-    # Risk distribution
+    # Risk distribution as pie chart
     st.subheader("Risk Distribution")
     risk_counts = df['risk_category'].value_counts()
-    risk_fig = px.bar(x=risk_counts.index,
-                      y=risk_counts.values,
-                      title='Distribution of Risk Flags',
-                      color=risk_counts.index,
-                      color_discrete_map={
-                          'No Risk': '#808080',
-                          'Liquidity Risk': '#90EE90',
-                          'Revenue Drop Risk': '#FFA500',
-                          'Non-Payment Risk': '#FF4B4B'
-                      })
+    risk_fig = px.pie(
+        values=risk_counts.values,
+        names=risk_counts.index,
+        title='Distribution of Risk Flags',
+        color=risk_counts.index,
+        color_discrete_map={
+            'No Risk': '#808080',
+            'Liquidity Risk': '#90EE90',
+            'Revenue Drop Risk': '#FFA500',
+            'Non-Payment Risk': '#FF4B4B'
+        })
+    risk_fig.update_traces(textposition='inside', textinfo='percent+label')
     st.plotly_chart(risk_fig, use_container_width=True)
