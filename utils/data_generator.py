@@ -9,13 +9,7 @@ def load_loan_data():
         # Try to load from a CSV file
         df = pd.read_csv('attached_assets/pipe_risk_analysis_with_repaid.csv')
 
-        # Adjust financial values by dividing by 10
-        if 'Amount' in df.columns:
-            df['Amount'] = df['Amount'] / 10
-        if 'Repaid Amount' in df.columns:
-            df['Repaid Amount'] = df['Repaid Amount'] / 10
-        if 'Pipe Fees' in df.columns:
-            df['Pipe Fees'] = df['Pipe Fees'] / 10
+        # Use financial values as they are in the CSV
 
         # Add risk flags if missing
         if 'liquidity_risk' not in df.columns:
@@ -42,9 +36,9 @@ def load_loan_data():
             'Date Funded': pd.to_datetime(['2023-01-15'] * num_rows),
             'Platform': ['Platform A'] * num_rows,
             'Business Name': ['Business ' + str(i) for i in range(1, num_rows + 1)],
-            'Amount': np.random.randint(1000, 10000, num_rows) / 10,  # Adjust to be smaller
-            'Pipe Fees': np.random.randint(100, 500, num_rows) / 10,  # Adjust to be smaller
-            'Repaid Amount': np.random.randint(0, 10000, num_rows) / 10,  # Adjust to be smaller
+            'Amount': np.random.randint(10000, 100000, num_rows),
+            'Pipe Fees': np.random.randint(1000, 5000, num_rows),
+            'Repaid Amount': np.random.randint(0, 100000, num_rows),
             'Liquidity Risk': np.random.choice([True, False], num_rows),
             'Revenue Drop Risk': np.random.choice([True, False], num_rows),
             'Non-Payment Risk': np.random.choice([True, False], num_rows)
