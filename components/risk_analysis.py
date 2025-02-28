@@ -7,7 +7,7 @@ def render_risk_analysis(df, risk_summary):
     st.header("Risk Analysis")
 
     # Risk distribution
-    st.subheader("Risk Distribution by Platform")
+    st.subheader("Risk Distribution by Platform") 
     risk_colors = {
         'No Risk': '#808080',
         'Liquidity Risk': '#90EE90',
@@ -34,7 +34,8 @@ def render_risk_analysis(df, risk_summary):
         fig.update_layout(title='Risk Distribution',
                           xaxis_title='Risk Category',
                           yaxis_title='Percentage (%)',
-                          barmode='group')
+                          barmode='group',
+                          margin=dict(t=30, b=0, l=0, r=0))
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("No data available for the selected platform.")

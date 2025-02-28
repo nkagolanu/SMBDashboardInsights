@@ -5,7 +5,6 @@ import pandas as pd
 
 def render_vintage_analysis(df, vintage_data):
     st.subheader("Vintage & Cohort Analysis")
-
     if not df.empty and 'vintage' in df.columns and 'risk_category' in df.columns:
         # Group by vintage and count risk categories
         vintage_risk = df.groupby(
@@ -44,7 +43,8 @@ def render_vintage_analysis(df, vintage_data):
                        title='Percentage of Non-Payment Risk Loans by Vintage',
                        markers=True,
                        color_discrete_sequence=['#FF4B4B'])
-        fig2.update_layout(yaxis_title='Non-Payment Risk %')
+        fig2.update_layout(yaxis_title='Non-Payment Risk %',
+                          margin=dict(t=30, b=0, l=0, r=0))
 
         # Display charts
         st.plotly_chart(fig2, use_container_width=True)

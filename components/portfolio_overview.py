@@ -30,8 +30,6 @@ def render_portfolio_overview(df, platform_name="All"):
         avg_loan_amount = df['amount'].mean()
         st.metric("Average Loan Amount", f"${avg_loan_amount:,.0f}")
 
-    st.markdown("---")
-
     # Loan distribution by size
     st.subheader("Loan Distribution by Size")
 
@@ -79,7 +77,8 @@ def render_portfolio_overview(df, platform_name="All"):
             "Large (>$150K)": "#FFD700"  # Gold
         })
     size_fig.update_layout(xaxis_title='Loan Size Category',
-                           yaxis_title='Number of Loans')
+                           yaxis_title='Number of Loans',
+                           margin=dict(t=30, b=0, l=0, r=0))
     st.plotly_chart(size_fig, use_container_width=True)
 
     st.markdown("---")
@@ -98,4 +97,5 @@ def render_portfolio_overview(df, platform_name="All"):
                           'Non-Payment Risk': '#FF4B4B'
                       })
     risk_fig.update_traces(textposition='inside', textinfo='percent+label')
+    risk_fig.update_layout(margin=dict(t=30, b=0, l=0, r=0))
     st.plotly_chart(risk_fig, use_container_width=True)

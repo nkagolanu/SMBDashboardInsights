@@ -155,12 +155,8 @@ with portfolio:
     # Portfolio Overview Section
     render_portfolio_overview(filtered_df, st.session_state.selected_platform)
 
-    st.markdown("---")
-
     # Vintage Analysis Section
     render_vintage_analysis(filtered_df, get_vintage_data(filtered_df))
-
-    st.markdown("---")
 
 # Data tab content
 with data_tab:
