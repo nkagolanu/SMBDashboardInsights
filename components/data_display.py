@@ -40,11 +40,22 @@ def render_data_display(df):
     if not selected_columns and default_columns:
         selected_columns = default_columns
 
+    # Format currency columns before display
+    display_data = filtered_data.copy()
+    
+    # Add dollar sign and format Amount column if it exists
+    if 'Amount' in display_data.columns:
+        display_data['Amount'] = display_data['Amount'].apply(lambda x: f"${x:,.0f}")
+    
+    # Add dollar sign and remove decimals from Repaid Amount column if it exists
+    if 'Repaid Amount' in display_data.columns:
+        display_data['Repaid Amount'] = display_data['Repaid Amount'].apply(lambda x: f"${x:,.0f}")
+    
     # Display the filtered data with selected columns
     if selected_columns:
-        st.dataframe(filtered_data[selected_columns], use_container_width=True)
+        st.dataframe(display_data[selected_columns], use_container_width=True)
     else:
-        st.dataframe(filtered_data, use_container_width=True)
+        st.dataframe(display_data, use_container_width=True)
 
     # Add download functionality
     csv = filtered_data.to_csv(index=False)
