@@ -46,6 +46,25 @@ if 'selected_platform' not in st.session_state:
 overview, portfolio = st.tabs(["Overview", "Portfolio Analysis"])
 
 with overview:
+    st.subheader("Platform Selection")
+    st.markdown(
+        "Use the selector below to focus on specific lending partners.")
+
+    # Platform selection
+    platforms = sorted(df['platform'].unique().tolist())
+    # Ensure Priority is first in the list after 'All'
+    if 'Priority' in platforms:
+        platforms.remove('Priority')
+        platform_options = ['All', 'Priority'] + platforms
+    else:
+        platform_options = ['All'] + platforms
+
+    # Find the index of Priority
+    default_index = platform_options.index('Priority')
+
+    st.session_state.selected_platform = st.selectbox("Select Platform",
+                                                      options=platform_options,
+                                                      index=default_index)
 
     st.markdown("""
     ### Purpose
@@ -58,7 +77,7 @@ with overview:
     ✅ **Analyze loan vintages** to assess repayment trends over time.  
     ✅ **Identify early warning signs** using risk metrics tailored for revenue-based financing.  
 
-    This enables **data-driven underwriting adjustments** and **proactive risk mitigation** to optimize Pipe’s lending strategy.
+    This enables **data-driven underwriting adjustments** and **proactive risk mitigation** to optimize Pipe's lending strategy.
     """)
 
     # Risk Category Explanation
@@ -114,25 +133,6 @@ with overview:
     )
 
     st.markdown("---")
-    st.subheader("Platform Selection")
-    st.markdown(
-        "Use the selector below to focus on specific lending partners.")
-
-    # Platform selection
-    platforms = sorted(df['platform'].unique().tolist())
-    # Ensure Priority is first in the list after 'All'
-    if 'Priority' in platforms:
-        platforms.remove('Priority')
-        platform_options = ['All', 'Priority'] + platforms
-    else:
-        platform_options = ['All'] + platforms
-
-    # Find the index of Priority
-    default_index = platform_options.index('Priority')
-
-    st.session_state.selected_platform = st.selectbox("Select Platform",
-                                                      options=platform_options,
-                                                      index=default_index)
 
 # Filter data based on selected platform
 filtered_df = df
