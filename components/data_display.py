@@ -26,8 +26,8 @@ def render_data_display(df):
     # Check if the column exists before setting as default
     default_columns = []
     for col in [
-            'Business Name', 'Platform', 'Amount', 'Repaid Amount',
-            'Pipe Fees', 'Risk Category', 'Date Funded', 'Vintage'
+            'business_name', 'platform', 'amount', 'repaid_amount', 'fees',
+            'risk_category', 'funded_date', 'vintage'
     ]:
         if col in all_columns:
             default_columns.append(col)
@@ -48,19 +48,19 @@ def render_data_display(df):
     display_data = filtered_data.copy()
 
     # Add dollar sign and format Amount column if it exists
-    if 'Amount' in display_data.columns:
-        display_data['Amount'] = display_data['Amount'].apply(
+    if 'amount' in display_data.columns:
+        display_data['amount'] = display_data['amount'].apply(
             lambda x: f"${x:,.0f}")
 
     # Add dollar sign and remove decimals from Repaid Amount column if it exists
-    if 'Repaid Amount' in display_data.columns:
-        display_data['Repaid Amount'] = display_data['Repaid Amount'].apply(
+    if 'repaid_amount' in display_data.columns:
+        display_data['repaid_amount'] = display_data['repaid_amount'].apply(
             lambda x: f"${x:,.0f}")
 
     # Format Date Funded column if it exists
-    if 'Date Funded' in display_data.columns:
-        display_data['Date Funded'] = pd.to_datetime(
-            display_data['Date Funded']).dt.date
+    if 'funded_date' in display_data.columns:
+        display_data['funded_date'] = pd.to_datetime(
+            display_data['funded_date']).dt.date
 
     # Display the filtered data with selected columns, hiding the index
     if selected_columns:
