@@ -35,8 +35,8 @@ def load_loan_data():
 
     # Clean up column names
     df = df.rename(columns={
-        'Embedded Platform Name': 'platform',
-        'SMB Name': 'business_name',
+        'Embedded Platform Name': 'Platform',
+        'SMB Name': 'Business_name',
         'Loan Funded On': 'start_date',
         'Loan Amount': 'amount',
         'Pipe Fees': 'fees'
