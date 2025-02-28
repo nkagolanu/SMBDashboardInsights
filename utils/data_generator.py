@@ -18,8 +18,14 @@ def load_loan_data():
         # Print column names for debugging
         print(f"CSV columns: {df.columns.tolist()}")
         
-        # Print max loan amount
-        print(f"Max loan amount: ${df['Loan Amount'].max():,.0f}")
+        # Print max loan amount with more details
+        try:
+            max_amount = df['Loan Amount'].max()
+            print(f"Max loan amount: ${max_amount:,.0f}")
+            print(f"Sample data: {df['Loan Amount'].head().tolist()}")
+        except Exception as e:
+            print(f"Error calculating max loan amount: {e}")
+            print(f"Columns available: {df.columns.tolist()}")
 
         # Clean up column names for better code readability
         df = df.rename(
