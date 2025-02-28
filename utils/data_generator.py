@@ -36,7 +36,8 @@ def load_loan_data():
         cols_to_divide = ['amount', 'fees', 'repaid_amount']
         df[cols_to_divide] = df[cols_to_divide].apply(pd.to_numeric,
                                                       errors='coerce') / 10.0
-        print(df.head)
+        print("DataFrame head:")
+        print(df.head())  # Use parentheses to actually call the method
 
         # Set risk category based on flags (mutually exclusive in this dataset)
         df['risk_category'] = 'No Risk'
