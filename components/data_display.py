@@ -27,7 +27,7 @@ def render_data_display(df):
     default_columns = []
     for col in [
             'Business Name', 'Platform', 'Amount', 'Repaid Amount',
-            'risk_category', 'Date Funded'
+            'risk_category', 'Date Funded', 'Vintage'
     ]:
         if col in all_columns:
             default_columns.append(col)
@@ -59,11 +59,14 @@ def render_data_display(df):
 
     # Format Date Funded column if it exists
     if 'Date Funded' in display_data.columns:
-        display_data['Date Funded'] = pd.to_datetime(display_data['Date Funded']).dt.date
+        display_data['Date Funded'] = pd.to_datetime(
+            display_data['Date Funded']).dt.date
 
     # Display the filtered data with selected columns, hiding the index
     if selected_columns:
-        st.dataframe(display_data[selected_columns], use_container_width=True, hide_index=True)
+        st.dataframe(display_data[selected_columns],
+                     use_container_width=True,
+                     hide_index=True)
     else:
         st.dataframe(display_data, use_container_width=True, hide_index=True)
 
