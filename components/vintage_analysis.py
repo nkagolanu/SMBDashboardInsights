@@ -31,9 +31,10 @@ def render_vintage_analysis(df, vintage_data):
     amount_col = 'Amount' if 'Amount' in df.columns else 'amount'
     repaid_col = 'Repaid Amount' if 'Repaid Amount' in df.columns else 'repaid_amount'
     business_col = 'Business Name' if 'Business Name' in df.columns else 'business_name'
+    vintage_col = 'Vintage' if 'Vintage' in df.columns else 'vintage'
     
     # Check if the Vintage column exists
-    if 'Vintage' in df.columns:
+    if vintage_col in df.columns:
         # Check what columns are available and adjust accordingly
         agg_dict = {}
         if amount_col in df.columns:
@@ -44,7 +45,7 @@ def render_vintage_analysis(df, vintage_data):
             agg_dict[business_col] = 'count'
         
         if agg_dict:  # Only proceed if we have columns to aggregate
-            cohort_metrics = df.groupby('Vintage').agg(agg_dict).reset_index()
+            cohort_metrics = df.groupby(vintage_col).agg(agg_dict).reset_index()
             
             # Calculate repayment rate if both columns exist
             if amount_col in cohort_metrics.columns and repaid_col in cohort_metrics.columns:

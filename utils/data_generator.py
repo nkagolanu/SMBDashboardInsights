@@ -33,9 +33,18 @@ def load_loan_data():
             })
 
         # Divide by 10 to have realistic numbers
-        df['amount'] = df['amount'] / 10.0
-        df['fees'] = df['fees'] / 10.0
-        df['repaid_amount'] = df['repaid_amount'] / 10.0
+        df['amount'] = pd.to_numeric(df['amount'], errors='coerce') / 10.0
+        df['fees'] = pd.to_numeric(df['fees'], errors='coerce') / 10.0
+        df['repaid_amount'] = pd.to_numeric(df['repaid_amount'], errors='coerce') / 10.0
+        
+        # Ensure we don't have NaN values
+        df['amount'] = df['amount'].fillna(0)
+        df['fees'] = df['fees'].fillna(0)
+        df['repaid_amount'] = df['repaid_amount'].fillna(0)
+        
+        # Print debug info
+        print(f"Amount column type: {df['amount'].dtype}")
+        print(f"Sample amount values: {df['amount'].head().tolist()}")
 
         # Set risk category based on flags (mutually exclusive in this dataset)
         df['risk_category'] = 'No Risk'
