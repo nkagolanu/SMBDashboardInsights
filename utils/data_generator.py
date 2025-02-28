@@ -1,106 +1,56 @@
 import pandas as pd
 import numpy as np
-from datetime import datetime
-
 
 def load_loan_data():
-    """Load loan data from CSV or create synthetic data"""
+    """Load loan data from CSV and transform for dashboard use"""
     try:
-        # Try to load from a CSV file
-        df = pd.read_csv('attached_assets/pipe_risk_analysis_with_repaid.csv')
+        # Load CSV file
+        df = pd.read_csv('attached_assets/pipe_risk_analysis_loan_level_adjusted (1).csv')
 
-        # Use financial values as they are in the CSV
-
-        # Add risk flags if missing
-        if 'liquidity_risk' not in df.columns:
-            df['liquidity_risk'] = False
-        if 'revenue_drop_risk' not in df.columns:
-            df['revenue_drop_risk'] = False
-        if 'non_payment_risk' not in df.columns:
-            df['non_payment_risk'] = False
-
-        # Ensure Risk Category exists
-        if 'Risk Category' not in df.columns:
-            df['Risk Category'] = 'No Risk'
-            # Set risk categories based on flags
-            df.loc[df['liquidity_risk'], 'Risk Category'] = 'Liquidity Risk 🟢'
-            df.loc[df['revenue_drop_risk'], 'Risk Category'] = 'Revenue Drop Risk 🟠'
-            df.loc[df['non_payment_risk'], 'Risk Category'] = 'Non-Payment Risk 🔴'
-
-        return df
-    except FileNotFoundError:
-        print("CSV file not found. Using synthetic data.")
-        # Generate synthetic data if the CSV file is not found
-        num_rows = 100
-        df = pd.DataFrame({
-            'Date Funded': pd.to_datetime(['2023-01-15'] * num_rows),
-            'Platform': ['Platform A'] * num_rows,
-            'Business Name': ['Business ' + str(i) for i in range(1, num_rows + 1)],
-            'Amount': np.random.randint(10000, 100000, num_rows),
-            'Pipe Fees': np.random.randint(1000, 5000, num_rows),
-            'Repaid Amount': np.random.randint(0, 100000, num_rows),
-            'Liquidity Risk': np.random.choice([True, False], num_rows),
-            'Revenue Drop Risk': np.random.choice([True, False], num_rows),
-            'Non-Payment Risk': np.random.choice([True, False], num_rows)
-
+        # Clean up column names for better code readability
+        df = df.rename(columns={
+            'Embedded Platform Name': 'platform',
+            'SMB Name': 'business_name',
+            'Loan Amount': 'amount',
+            'Pipe Fees': 'fees',
+            'Loan Funded On': 'loan_funded_on',
+            'Repayment t-1 Amount': 'repayment_t1_amount',
+            'Repayment t-2 Amount': 'repayment_t2_amount',
+            'Liquidity Risk': 'liquidity_risk',
+            'Revenue Drop Risk': 'revenue_drop_risk',
+            'Non-Payment Risk': 'non_payment_risk'
         })
-        # Convert date columns to datetime
-        df['Date Funded'] = pd.to_datetime(df['Date Funded'])
-        return df
 
+        # Calculate repaid amount from t-1 and t-2
+        df['repaid_amount'] = df['repayment_t1_amount'] + df['repayment_t2_amount']
+
+        # Set risk category based on flags (mutually exclusive in this dataset)
+        df['risk_category'] = 'No Risk'
+        df.loc[df['liquidity_risk'] == 1, 'risk_category'] = 'Liquidity Risk 🟢'
+        df.loc[df['revenue_drop_risk'] == 1, 'risk_category'] = 'Revenue Drop Risk 🟠'
+        df.loc[df['non_payment_risk'] == 1, 'risk_category'] = 'Non-Payment Risk 🔴'
+
+        # Convert loan date to datetime and create vintage
+        df['loan_funded_on'] = pd.to_datetime(df['loan_funded_on'])
+        df['vintage'] = df['loan_funded_on'].dt.strftime('Q%q %Y')
+
+        return df
+    except Exception as e:
+        print(f"Error loading data: {str(e)}")
+        return pd.DataFrame()  # Return empty DataFrame if loading fails
 
 def get_vintage_data(df):
-    """Convert loan data into vintage analysis format"""
-    # Check which date column is available
-    date_column = None
-    if 'Date Funded' in df.columns:
-        date_column = 'Date Funded'
-    elif 'Loan Funded On' in df.columns:
-        date_column = 'Loan Funded On'
-    
-    # Use 'Vintage' column we created in load_loan_data
-    if 'Vintage' not in df.columns and date_column is not None:
-        # Create Vintage column if it doesn't exist yet
-        # First make sure the date column contains datetime objects
-        try:
-            # Convert to datetime if it's not already
-            if not pd.api.types.is_datetime64_any_dtype(df[date_column]):
-                df[date_column] = pd.to_datetime(df[date_column], errors='coerce')
-            
-            # Now create the Vintage column safely
-            df['Vintage'] = df[date_column].apply(
-                lambda date: f"Q{(date.month-1)//3+1} {date.year}" if pd.notnull(date) else "Unknown")
-        except:
-            # Fallback if conversion fails
-            df['Vintage'] = 'Q1 2023'  # Default value
-    elif 'Vintage' not in df.columns:
-        # If no date column available, create a default vintage
-        df['Vintage'] = 'Q1 2023'  # Default value
-    
-    # Columns to aggregate
-    agg_dict = {}
-    if 'Amount' in df.columns:
-        agg_dict['Amount'] = 'sum'
-    if 'Repaid Amount' in df.columns:
-        agg_dict['Repaid Amount'] = 'sum'
-    if 'Business Name' in df.columns:
-        agg_dict['Business Name'] = 'count'
-    
-    # Make sure we're using the renamed column names from load_loan_data
-    if agg_dict:  # Only perform aggregation if we have columns to aggregate
-        vintage_summary = df.groupby('Vintage').agg(agg_dict).reset_index()
-    else:
-        # Create a default vintage summary with the necessary columns
-        vintage_summary = pd.DataFrame({
-            'Vintage': df['Vintage'].unique(),
-            'repayment_rate': [0.5] * len(df['Vintage'].unique())  # Default 50% repayment rate
-        })
-    
-    # Calculate repayment rate if both columns exist
-    if 'Amount' in vintage_summary.columns and 'Repaid Amount' in vintage_summary.columns:
-        vintage_summary['repayment_rate'] = vintage_summary['Repaid Amount'] / vintage_summary['Amount']
-    else:
-        # Add a default repayment rate if data is missing
-        vintage_summary['repayment_rate'] = 0.5  # Default 50% repayment rate
-    
-    return vintage_summary
+    """Calculate vintage performance metrics"""
+    if df.empty:
+        return pd.DataFrame()
+
+    # Group by vintage and calculate metrics
+    vintage_data = df.groupby('vintage').agg({
+        'amount': 'sum',
+        'repaid_amount': 'sum'
+    }).reset_index()
+
+    # Calculate repayment rate
+    vintage_data['repayment_rate'] = vintage_data['repaid_amount'] / vintage_data['amount']
+
+    return vintage_data
