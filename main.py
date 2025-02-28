@@ -162,9 +162,6 @@ with portfolio:
 
     st.markdown("---")
 
-    # Risk Analysis Section
-    render_risk_analysis(filtered_df, get_risk_summary(filtered_df))
-
 # Data tab content
 with data_tab:
     render_data_display(filtered_df)
