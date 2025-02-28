@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from utils.data_generator import load_loan_data, get_vintage_data
 from utils.risk_analyzer import get_risk_summary, calculate_risk_metrics, get_risk_category_table
 from components.portfolio_overview import render_portfolio_overview
@@ -9,14 +10,6 @@ st.set_page_config(page_title="AI-Powered Risk Insights Dashboard",
                    page_icon="📊",
                    layout="wide")
 
-# Configure to hide the sidebar nav
-st.markdown("""
-<style>
-[data-testid="stSidebar"] {
-    display: none;
-}
-</style>
-""", unsafe_allow_html=True)
 
 # Load real data
 @st.cache_data
@@ -26,6 +19,7 @@ def load_data():
     risk_summary = get_risk_summary(df)
     risk_metrics = calculate_risk_metrics(df)
     return df, vintage_data, risk_summary, risk_metrics
+
 
 # Load data
 df, vintage_data, risk_summary, risk_metrics = load_data()
@@ -38,10 +32,7 @@ if 'selected_platform' not in st.session_state:
     st.session_state.selected_platform = 'Priority'  # Set default platform
 
 # Create tabs
-overview, portfolio = st.tabs([
-    "Overview",
-    "Portfolio Analysis"
-])
+overview, portfolio = st.tabs(["Overview", "Portfolio Analysis"])
 
 with overview:
     st.header("Dashboard Overview")
@@ -64,21 +55,61 @@ with overview:
     """)
 
     # Risk Category Explanation
-    st.subheader("Risk Categories Explained")
-    risk_table = get_risk_category_table()
-    st.dataframe(
-        risk_table,
-        column_config={
-            "Risk Category": st.column_config.Column(width=200),
-            "Definition": st.column_config.Column(width=800),
-            "Severity": st.column_config.Column(width=150)
-        },
-        hide_index=True
+    data = {
+        "Risk Category":
+        ["Liquidity Risk", "Revenue Drop Risk", "Non-Payment Risk"],
+        "Definition": [
+            "Business revenue is stable, but their overall cash flow health is deteriorating. They might be overleveraged, have high expenses, or be showing early warning signs of financial strain.Repayments are still occurring at the expected percentage, but their total financial health is weakening.",
+            "Business revenue has dropped ≥50% for multiple months, meaning their ability to make repayments is significantly reduced. They are still making some repayments, but their funding risk is increasing.",
+            "Business has had $0 revenue for 60+ days, meaning no repayments are occurring.This suggests business closure, switching platforms, or severe distress."
+        ],
+        "Severity": ["Mild", "Moderate", "Severe"]
+    }
+
+    # Convert DataFrame
+    risk_table = pd.DataFrame(data)
+
+    # Force Streamlit to render HTML correctly
+    def format_html(text):
+        return f'<div style="text-align: left; word-wrap: break-word; white-space: pre-wrap;">{text}</div>'
+
+    risk_table["Definition"] = risk_table["Definition"].apply(format_html)
+
+    st.subheader("Risk Categories")
+
+    # Use Markdown-rendered table for styling
+    st.markdown("""
+        <style>
+            thead th {
+                text-align: left !important;  /* Left-align headers */
+            }
+            tbody tr td {
+                white-space: pre-wrap !important;
+                word-wrap: break-word !important;
+                text-align: left !important;  /* Left-aligns text */
+            }
+            tbody tr td:nth-child(3) {
+                white-space: nowrap !important;
+                text-align: center !important;  /* Centers the Severity column */
+            }
+        </style>
+    """,
+                unsafe_allow_html=True)
+
+    # Render as HTML for proper text wrapping and alignment
+    st.write(risk_table.to_html(escape=False, index=False),
+             unsafe_allow_html=True)
+
+    st.markdown("**Why these Three Risk Metrics**")
+
+    st.markdown(
+        "Traditional delinquency metrics like 90 days past due may not work for Pipe’s revenue-based financing because there are no fixed repayment schedules—repayments fluctuate with revenue. Instead, these three risk metrics may capture signs of financial distress"
     )
 
     st.markdown("---")
     st.subheader("Platform Selection")
-    st.markdown("Use the selector below to focus on specific lending partners.")
+    st.markdown(
+        "Use the selector below to focus on specific lending partners.")
 
     # Platform selection
     platforms = sorted(df['platform'].unique().tolist())
@@ -92,11 +123,9 @@ with overview:
     # Find the index of Priority
     default_index = platform_options.index('Priority')
 
-    st.session_state.selected_platform = st.selectbox(
-        "Select Platform",
-        options=platform_options,
-        index=default_index
-    )
+    st.session_state.selected_platform = st.selectbox("Select Platform",
+                                                      options=platform_options,
+                                                      index=default_index)
 
 # Filter data based on selected platform
 filtered_df = df
@@ -119,3 +148,11 @@ with portfolio:
 
     # Risk Analysis Section
     render_risk_analysis(filtered_df, get_risk_summary(filtered_df))
+
+# Add download functionality
+if st.sidebar.button("Export Data"):
+    csv = filtered_df.to_csv(index=False)
+    st.sidebar.download_button(label="Download CSV",
+                               data=csv,
+                               file_name="loan_portfolio.csv",
+                               mime="text/csv")
