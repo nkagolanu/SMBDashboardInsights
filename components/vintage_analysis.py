@@ -32,8 +32,19 @@ def analyze_repayment_velocity(df):
     # Reset index to make vintage a column
     velocity_data = velocity_data.reset_index()
     
-    # Sort by vintage
-    velocity_data = velocity_data.sort_values('vintage')
+    # Sort by vintage chronologically
+    def vintage_sort_key(vintage_str):
+        # Parse 'Q1 2024' format into a sortable value
+        try:
+            quarter = int(vintage_str[1])
+            year = int(vintage_str.split()[1])
+            return year * 10 + quarter
+        except:
+            return 0  # Default for any unparseable vintages
+            
+    velocity_data['sort_key'] = velocity_data['vintage'].apply(vintage_sort_key)
+    velocity_data = velocity_data.sort_values('sort_key')
+    velocity_data = velocity_data.drop('sort_key', axis=1)
     
     return velocity_data
 
@@ -57,8 +68,19 @@ def render_vintage_analysis(df, vintage_data):
             vintage_risk['Non-Payment Risk'] / vintage_risk['Total Loans'] *
             100).round(1)
 
-        # Sort by vintage
-        vintage_risk = vintage_risk.sort_values('vintage')
+        # Sort by vintage chronologically 
+        def vintage_sort_key(vintage_str):
+            # Parse 'Q1 2024' format into a sortable value
+            try:
+                quarter = int(vintage_str[1])
+                year = int(vintage_str.split()[1])
+                return year * 10 + quarter
+            except:
+                return 0  # Default for any unparseable vintages
+                
+        vintage_risk['sort_key'] = vintage_risk['vintage'].apply(vintage_sort_key)
+        vintage_risk = vintage_risk.sort_values('sort_key')
+        vintage_risk = vintage_risk.drop('sort_key', axis=1)
 
         # Identify highest risk vintages
         high_risk_vintages = vintage_risk.sort_values('Non-Payment Risk %',
