@@ -57,6 +57,11 @@ def render_data_display(df):
         display_data['repaid_amount'] = display_data['repaid_amount'].apply(
             lambda x: f"${x:,.0f}")
 
+    # Add dollar sign and remove decimals from fees column if it exists
+    if 'fees' in display_data.columns:
+        display_data['fees'] = display_data['fees'].apply(
+            lambda x: f"${x:,.0f}")
+
     # Format Date Funded column if it exists
     if 'funded_date' in display_data.columns:
         display_data['funded_date'] = pd.to_datetime(

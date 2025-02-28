@@ -9,7 +9,7 @@ def load_loan_data():
         import os
         print(f"Current directory: {os.getcwd()}")
         print(f"Files in attached_assets: {os.listdir('attached_assets')}")
-        
+
         # Load CSV file
         file_path = 'attached_assets/pipe_risk_analysis_with_repaid.csv'
         print(f"Attempting to load file: {file_path}")
@@ -17,7 +17,7 @@ def load_loan_data():
 
         # Print column names for debugging
         print(f"CSV columns: {df.columns.tolist()}")
-        
+
         # Clean up column names for better code readability
         df = df.rename(
             columns={
@@ -32,6 +32,11 @@ def load_loan_data():
                 'Non-Payment Risk': 'non_payment_risk'
             })
 
+        # Divide by 10 to have realistic numbers
+        df['amount'] = df['amount'] / 10.0
+        df['fees'] = df['fees'] / 10.0
+        df['repaid_amount'] = df['repaid_amount'] / 10.0
+
         # Set risk category based on flags (mutually exclusive in this dataset)
         df['risk_category'] = 'No Risk'
         df.loc[df['liquidity_risk'] == 1, 'risk_category'] = 'Liquidity Risk'
@@ -42,20 +47,23 @@ def load_loan_data():
 
         # Convert loan date to datetime and create vintage
         df['funded_date'] = pd.to_datetime(df['funded_date'])
-        
+
         # Create vintage using quarter calculation
         df['quarter'] = df['funded_date'].dt.quarter
         df['year'] = df['funded_date'].dt.year
-        df['vintage'] = 'Q' + df['quarter'].astype(str) + ' ' + df['year'].astype(str)
-        
+        df['vintage'] = 'Q' + df['quarter'].astype(
+            str) + ' ' + df['year'].astype(str)
+
         # Drop helper columns
         df = df.drop(['quarter', 'year'], axis=1)
 
         # Add default platform if missing
         if 'platform' not in df.columns:
-            print("Warning: 'platform' column not found in CSV, adding default value")
+            print(
+                "Warning: 'platform' column not found in CSV, adding default value"
+            )
             df['platform'] = 'Priority'  # Default platform
-            
+
         return df
     except Exception as e:
         print(f"Error loading data: {str(e)}")
