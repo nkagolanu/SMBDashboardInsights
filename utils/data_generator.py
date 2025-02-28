@@ -4,53 +4,55 @@ from datetime import datetime
 
 
 def load_loan_data():
-    """Load loan data from CSV file"""
-    df = pd.read_csv('attached_assets/pipe_risk_analysis_with_repaid.csv')
+    """Load loan data from CSV or create synthetic data"""
+    try:
+        # Try to load from a CSV file
+        df = pd.read_csv('attached_assets/pipe_risk_analysis_with_repaid.csv')
 
-    # Convert date columns to datetime
-    df['Loan Funded On'] = pd.to_datetime(df['Loan Funded On'])
+        # Adjust financial values by dividing by 10
+        if 'Amount' in df.columns:
+            df['Amount'] = df['Amount'] / 10
+        if 'Repaid Amount' in df.columns:
+            df['Repaid Amount'] = df['Repaid Amount'] / 10
+        if 'Pipe Fees' in df.columns:
+            df['Pipe Fees'] = df['Pipe Fees'] / 10
 
-    # Calculate repayment velocity and total repaid
-    df['repayment_rate'] = df['Repaid Total So Far'] / df['Loan Amount']
+        # Add risk flags if missing
+        if 'liquidity_risk' not in df.columns:
+            df['liquidity_risk'] = False
+        if 'revenue_drop_risk' not in df.columns:
+            df['revenue_drop_risk'] = False
+        if 'non_payment_risk' not in df.columns:
+            df['non_payment_risk'] = False
 
-    # Convert boolean risk flags
-    df['liquidity_risk'] = df['Liquidity Risk'].astype(bool)
-    df['revenue_drop_risk'] = df['Revenue Drop Risk'].astype(bool)
-    df['non_payment_risk'] = df['Non-Payment Risk'].astype(bool)
+        # Ensure Risk Category exists
+        if 'Risk Category' not in df.columns:
+            df['Risk Category'] = 'No Risk'
+            # Set risk categories based on flags
+            df.loc[df['liquidity_risk'], 'Risk Category'] = 'Liquidity Risk 🟢'
+            df.loc[df['revenue_drop_risk'], 'Risk Category'] = 'Revenue Drop Risk 🟠'
+            df.loc[df['non_payment_risk'], 'Risk Category'] = 'Non-Payment Risk 🔴'
 
-    # Create risk category
-    def get_risk_category(row):
-        if row['non_payment_risk']:
-            return 'Non-Payment Risk 🔴'
-        elif row['revenue_drop_risk']:
-            return 'Revenue Drop Risk 🟠'
-        elif row['liquidity_risk']:
-            return 'Liquidity Risk 🟢'
-        else:
-            return 'No Risk'
+        return df
+    except FileNotFoundError:
+        print("CSV file not found. Using synthetic data.")
+        # Generate synthetic data if the CSV file is not found
+        num_rows = 100
+        df = pd.DataFrame({
+            'Date Funded': pd.to_datetime(['2023-01-15'] * num_rows),
+            'Platform': ['Platform A'] * num_rows,
+            'Business Name': ['Business ' + str(i) for i in range(1, num_rows + 1)],
+            'Amount': np.random.randint(1000, 10000, num_rows) / 10,  # Adjust to be smaller
+            'Pipe Fees': np.random.randint(100, 500, num_rows) / 10,  # Adjust to be smaller
+            'Repaid Amount': np.random.randint(0, 10000, num_rows) / 10,  # Adjust to be smaller
+            'Liquidity Risk': np.random.choice([True, False], num_rows),
+            'Revenue Drop Risk': np.random.choice([True, False], num_rows),
+            'Non-Payment Risk': np.random.choice([True, False], num_rows)
 
-    df['Risk Category'] = df.apply(get_risk_category, axis=1)
-    
-    # Create Vintage column in Q# YYYY format
-    def get_quarter_year(date):
-        quarter = f"Q{(date.month-1)//3+1} {date.year}"
-        return quarter
-        
-    # Use 'Loan Funded On' instead of 'Date Funded' since that's the column we have
-    df['Vintage'] = df['Loan Funded On'].apply(get_quarter_year)
-
-    # Clean up column names
-    df = df.rename(
-        columns={
-            'Embedded Platform Name': 'Platform',
-            'SMB Name': 'Business Name',
-            'Loan Funded On': 'Date Funded',
-            'Loan Amount': 'Amount',
-            'Pipe Fees': 'Pipe Fees',
-            'Repaid Total So Far': 'Repaid Amount'
         })
-
-    return df
+        # Convert date columns to datetime
+        df['Date Funded'] = pd.to_datetime(df['Date Funded'])
+        return df
 
 
 def get_vintage_data(df):
