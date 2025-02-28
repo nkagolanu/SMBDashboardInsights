@@ -1,3 +1,4 @@
+
 import pandas as pd
 
 def get_risk_summary(df):
@@ -31,6 +32,14 @@ def get_risk_summary(df):
 
 def calculate_risk_metrics(df):
     """Calculate additional risk metrics"""
+    # Ensure risk flag columns exist
+    if 'liquidity_risk' not in df.columns:
+        df['liquidity_risk'] = False
+    if 'revenue_drop_risk' not in df.columns:
+        df['revenue_drop_risk'] = False
+    if 'non_payment_risk' not in df.columns:
+        df['non_payment_risk'] = False
+        
     metrics = {
         'total_at_risk': len(df[df['Risk Category'] != 'No Risk']),
         'liquidity_risk': len(df[df['liquidity_risk']]),

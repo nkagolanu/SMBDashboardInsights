@@ -87,7 +87,14 @@ def get_vintage_data(df):
         agg_dict['Business Name'] = 'count'
     
     # Make sure we're using the renamed column names from load_loan_data
-    vintage_summary = df.groupby('Vintage').agg(agg_dict).reset_index()
+    if agg_dict:  # Only perform aggregation if we have columns to aggregate
+        vintage_summary = df.groupby('Vintage').agg(agg_dict).reset_index()
+    else:
+        # Create a default vintage summary with the necessary columns
+        vintage_summary = pd.DataFrame({
+            'Vintage': df['Vintage'].unique(),
+            'repayment_rate': [0.5] * len(df['Vintage'].unique())  # Default 50% repayment rate
+        })
     
     # Calculate repayment rate if both columns exist
     if 'Amount' in vintage_summary.columns and 'Repaid Amount' in vintage_summary.columns:
