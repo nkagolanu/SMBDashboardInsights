@@ -30,8 +30,8 @@ def render_portfolio_overview(df):
             return "Small ($10K-$50K)"
         elif amount >= 50000 and amount < 150000:
             return "Medium ($50K-$150K)"
-        elif amount >= 150000 and amount <= 300000:
-            return "Large ($150K-$300K)"
+        elif amount >= 150000:
+            return "Large (>$150K)"
         else:
             return "Other"
 

@@ -11,7 +11,7 @@ def load_loan_data():
         print(f"Files in attached_assets: {os.listdir('attached_assets')}")
 
         # Load CSV file
-        file_path = 'attached_assets/pipe_risk_analysis_with_repaid.csv'
+        file_path = 'attached_assets/pipe_final_data.csv'
         print(f"Attempting to load file: {file_path}")
         df = pd.read_csv(file_path)
 
@@ -32,10 +32,6 @@ def load_loan_data():
                 'Non-Payment Risk': 'non_payment_risk'
             })
 
-        # Divide by 10 to have realistic numbers
-        cols_to_divide = ['amount', 'fees', 'repaid_amount']
-        df[cols_to_divide] = df[cols_to_divide].apply(pd.to_numeric,
-                                                      errors='coerce') / 10.0
         print("DataFrame head:")
         print(df.head())  # Use parentheses to actually call the method
 
