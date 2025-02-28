@@ -18,8 +18,8 @@ def render_portfolio_overview(df):
         st.metric("Total Capital Returned", f"${total_returned:,.0f}")
 
     with col3:
-        # Assuming there's a fees column, otherwise calculating a percentage
-        if 'Fees' in df.columns:
+        # Check if Pipe Fees column exists, otherwise calculate a percentage
+        if 'Pipe Fees' in df.columns:
             total_fees = df['Pipe Fees'].sum()
         else:
             # Calculate fees as 5% of repaid amount (example calculation)
