@@ -26,6 +26,12 @@ def render_portfolio_overview(df, platform_name="All"):
         total_outstanding_loans = df['amount'].count()
         st.metric("Total Outstanding Loans", f"{total_outstanding_loans}")
 
+    with col2:
+        avg_loan_amount = df['amount'].mean()
+        st.metric("Average Loan Amount", f"${avg_loan_amount:,.0f}")
+
+    st.markdown("---")
+
     # Loan distribution by size
     st.subheader("Loan Distribution by Size")
 
@@ -76,19 +82,20 @@ def render_portfolio_overview(df, platform_name="All"):
                            yaxis_title='Number of Loans')
     st.plotly_chart(size_fig, use_container_width=True)
 
+    st.markdown("---")
+
     # Risk distribution as pie chart
     st.subheader("Risk Distribution")
     risk_counts = df['risk_category'].value_counts()
-    risk_fig = px.pie(
-        values=risk_counts.values,
-        names=risk_counts.index,
-        title='Distribution of Risk Flags',
-        color=risk_counts.index,
-        color_discrete_map={
-            'No Risk': '#808080',
-            'Liquidity Risk': '#90EE90',
-            'Revenue Drop Risk': '#FFA500',
-            'Non-Payment Risk': '#FF4B4B'
-        })
+    risk_fig = px.pie(values=risk_counts.values,
+                      names=risk_counts.index,
+                      title='Distribution of Risk Flags',
+                      color=risk_counts.index,
+                      color_discrete_map={
+                          'No Risk': '#808080',
+                          'Liquidity Risk': '#90EE90',
+                          'Revenue Drop Risk': '#FFA500',
+                          'Non-Payment Risk': '#FF4B4B'
+                      })
     risk_fig.update_traces(textposition='inside', textinfo='percent+label')
     st.plotly_chart(risk_fig, use_container_width=True)
