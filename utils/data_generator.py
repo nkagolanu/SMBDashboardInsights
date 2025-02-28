@@ -47,12 +47,16 @@ def load_loan_data():
 
 def get_vintage_data(df):
     """Convert loan data into vintage analysis format"""
+    # Use 'Date Funded' instead of 'start_date'
     df['vintage'] = df['Date Funded'].dt.strftime('%Y-%m')
+
+    # Make sure we're using the renamed column names from load_loan_data
     vintage_summary = df.groupby('vintage').agg({
-        'amount': 'sum',
-        'repaid_amount': 'sum',
-        'business_name': 'count'
+        'Amount': 'sum',
+        'Repaid Amount': 'sum',
+        'Business Name': 'count'
     }).reset_index()
+
     vintage_summary['repayment_rate'] = vintage_summary[
-        'repaid_amount'] / vintage_summary['amount']
+        'Repaid Amount'] / vintage_summary['Amount']
     return vintage_summary
