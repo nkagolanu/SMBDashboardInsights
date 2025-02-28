@@ -17,8 +17,13 @@ def render_data_display(df):
     else:
         filtered_data = df
 
-    # Display number of records
+    # Display number of records and max loan amount
     st.write(f"Displaying {len(filtered_data)} records")
+    
+    # Show max loan amount if data exists and column exists
+    if not filtered_data.empty and 'amount' in filtered_data.columns:
+        max_loan = filtered_data['amount'].max()
+        st.write(f"Maximum loan amount: ${max_loan:,.0f}")
 
     # Allow column selection
     all_columns = df.columns.tolist()

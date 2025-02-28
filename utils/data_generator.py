@@ -17,6 +17,9 @@ def load_loan_data():
 
         # Print column names for debugging
         print(f"CSV columns: {df.columns.tolist()}")
+        
+        # Print max loan amount
+        print(f"Max loan amount: ${df['Loan Amount'].max():,.0f}")
 
         # Clean up column names for better code readability
         df = df.rename(
